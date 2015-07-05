@@ -1,0 +1,188 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{9B308799-2927-4BC6-A03E-731B680BBD5D}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>GPGame</RootNamespace>
+    <ProjectName>GPEngine</ProjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v110</PlatformToolset>
+    <CharacterSet>NotSet</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v110</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>NotSet</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions);GP_PLATFORM_WIN32</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+      <PrecompiledHeaderFile />
+      <AdditionalIncludeDirectories>GPGame;paltforms\win32;renderer\Software;renderer;2d;utils;system;math;io;graphics;data_structure;core;base;3d;./;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>opengl32.lib;glu32.lib;glut32.lib;glew32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <Text Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="2d\GPNode.h" />
+    <ClInclude Include="3d\GPGeometry.h" />
+    <ClInclude Include="3d\GPSpatial.h" />
+    <ClInclude Include="base\glfunc.h" />
+    <ClInclude Include="base\gp.h" />
+    <ClInclude Include="base\GPObject.h" />
+    <ClInclude Include="base\GPSmartPtr.h" />
+    <ClInclude Include="base\GPTimer.h" />
+    <ClInclude Include="base\types.h" />
+    <ClInclude Include="core\GPApplication.h" />
+    <ClInclude Include="core\GPApplicationProtocol.h" />
+    <ClInclude Include="core\GPDirector.h" />
+    <ClInclude Include="core\GPScreen.h" />
+    <ClInclude Include="data_structure\ArrayList.h" />
+    <ClInclude Include="data_structure\GPArrayList.h" />
+    <ClInclude Include="data_structure\GPStack.h" />
+    <ClInclude Include="data_structure\LinkList.h" />
+    <ClInclude Include="data_structure\List.h" />
+    <ClInclude Include="graphics\GPColorRGBA.h" />
+    <ClInclude Include="graphics\GPElementBuffer.h" />
+    <ClInclude Include="graphics\GPGLShader.h" />
+    <ClInclude Include="graphics\GPGLShaderProgram.h" />
+    <ClInclude Include="graphics\GPGLView.h" />
+    <ClInclude Include="graphics\GPImage.h" />
+    <ClInclude Include="graphics\GPModel.h" />
+    <ClInclude Include="graphics\GPRenderTexture.h" />
+    <ClInclude Include="graphics\GPTexture.h" />
+    <ClInclude Include="graphics\GPTextureRegion.h" />
+    <ClInclude Include="graphics\GPVertexBuffer.h" />
+    <ClInclude Include="io\GPCharBuffer.h" />
+    <ClInclude Include="io\GPFileStream.h" />
+    <ClInclude Include="io\GPFIleUtil.h" />
+    <ClInclude Include="io\GPStringStream.h" />
+    <ClInclude Include="io\ObjLoader.h" />
+    <ClInclude Include="math\gpmath.h" />
+    <ClInclude Include="math\GPMatrix4.h" />
+    <ClInclude Include="math\GPRect.h" />
+    <ClInclude Include="math\GPTransform.h" />
+    <ClInclude Include="math\GPVector.h" />
+    <ClInclude Include="paltforms\win32\AppDelegate.h" />
+    <ClInclude Include="paltforms\win32\GPGLViewImp_Win32.h" />
+    <ClInclude Include="paltforms\win32\GPKeyHandler.h" />
+    <ClInclude Include="paltforms\win32\GPApplication_Win32.h" />
+    <ClInclude Include="paltforms\win32\Resource.h" />
+    <ClInclude Include="paltforms\win32\stdafx.h" />
+    <ClInclude Include="paltforms\win32\targetver.h" />
+    <ClInclude Include="renderer\GPGLRenderer.h" />
+    <ClInclude Include="renderer\GPRenderer.h" />
+    <ClInclude Include="renderer\RenderDefs.h" />
+    <ClInclude Include="renderer\Software\GPSoftwareRenderer.h" />
+    <ClInclude Include="Resource.h" />
+    <ClInclude Include="system\GPOpenGLStateManager.h" />
+    <ClInclude Include="system\GPSystem.h" />
+    <ClInclude Include="TestScreen.h" />
+    <ClInclude Include="utils\GPLogger.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="2d\GPNode.cpp" />
+    <ClCompile Include="3d\GPGeometry.cpp" />
+    <ClCompile Include="3d\GPSpatial.cpp" />
+    <ClCompile Include="base\GPObject.cpp" />
+    <ClCompile Include="core\GPDirector.cpp" />
+    <ClCompile Include="core\GPScreen.cpp" />
+    <ClCompile Include="graphics\GPColorRGBA.cpp" />
+    <ClCompile Include="graphics\GPElementBuffer.cpp" />
+    <ClCompile Include="graphics\GPGLShader.cpp" />
+    <ClCompile Include="graphics\GPGLShaderProgram.cpp" />
+    <ClCompile Include="graphics\GPGLView.cpp" />
+    <ClCompile Include="graphics\GPImage.cpp" />
+    <ClCompile Include="graphics\GPModel.cpp" />
+    <ClCompile Include="graphics\GPRenderTexture.cpp" />
+    <ClCompile Include="graphics\GPTexture.cpp" />
+    <ClCompile Include="graphics\GPTextureRegion.cpp" />
+    <ClCompile Include="io\GPCharBuffer.cpp" />
+    <ClCompile Include="io\GPFileStream.cpp" />
+    <ClCompile Include="io\GPFileUtil.cpp" />
+    <ClCompile Include="io\GPStringStream.cpp" />
+    <ClCompile Include="io\ObjLoader.cpp" />
+    <ClCompile Include="math\GPMatrix4.cpp" />
+    <ClCompile Include="math\GPTransform.cpp" />
+    <ClCompile Include="paltforms\win32\AppDelegate.cpp" />
+    <ClCompile Include="paltforms\win32\GPGLViewImp_Win32.cpp" />
+    <ClCompile Include="paltforms\win32\GPKeyHandler.cpp" />
+    <ClCompile Include="paltforms\win32\GPApplication_Win32.cpp" />
+    <ClCompile Include="paltforms\win32\stdafx.cpp" />
+    <ClCompile Include="renderer\GPGLRenderer.cpp" />
+    <ClCompile Include="renderer\GPRenderer.cpp" />
+    <ClCompile Include="renderer\Software\GPSoftwareRenderer.cpp" />
+    <ClCompile Include="system\GPOpenGLStateManager.cpp" />
+    <ClCompile Include="TestScreen.cpp" />
+    <ClCompile Include="utils\GPLogger.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="GPGame.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="GPGame.ico" />
+    <Image Include="small.ico" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

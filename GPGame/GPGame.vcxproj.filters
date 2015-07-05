@@ -1,0 +1,346 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="源文件">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="头文件">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="资源文件">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="soft_renderer">
+      <UniqueIdentifier>{0cddc03e-3acd-43dd-9379-cd2b5dcbc5db}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="base">
+      <UniqueIdentifier>{e53a7e44-6902-42ce-a892-2291e422cf6e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="base\2d">
+      <UniqueIdentifier>{ae0a2cf7-3ff4-4734-b670-c26d3c123aec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="base\3d">
+      <UniqueIdentifier>{b59eec1d-c481-48b5-bbc5-9c995fc119c1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="core">
+      <UniqueIdentifier>{d16de3f6-4957-40e0-97df-ea97c18e8d76}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="data_structures">
+      <UniqueIdentifier>{84af0d81-ef0a-415c-8f72-a5bae639a95d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="graphics">
+      <UniqueIdentifier>{fb553aa2-4820-42c4-9e48-2343aabc2dbe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="core\io">
+      <UniqueIdentifier>{59ed22b0-299e-4393-b111-9021e4cac1c9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="system">
+      <UniqueIdentifier>{50662849-61b5-4234-93a8-966e9d639f3e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="utils">
+      <UniqueIdentifier>{476f4cf0-f4bc-422b-a193-899465b5c244}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="renderer">
+      <UniqueIdentifier>{805da493-5f7d-4f8a-8068-7c67b085c77d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="math">
+      <UniqueIdentifier>{0284a2b0-738f-4842-a680-fd297fe68348}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="platforms">
+      <UniqueIdentifier>{eff86a8e-76cd-4189-8c95-b3a802b8e72e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="platforms\win32">
+      <UniqueIdentifier>{39f20b1a-972f-47d7-81ab-f631a1f7b715}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Resource.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="TestScreen.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="base\glfunc.h">
+      <Filter>base</Filter>
+    </ClInclude>
+    <ClInclude Include="base\gp.h">
+      <Filter>base</Filter>
+    </ClInclude>
+    <ClInclude Include="base\GPObject.h">
+      <Filter>base</Filter>
+    </ClInclude>
+    <ClInclude Include="base\GPSmartPtr.h">
+      <Filter>base</Filter>
+    </ClInclude>
+    <ClInclude Include="2d\GPNode.h">
+      <Filter>base\2d</Filter>
+    </ClInclude>
+    <ClInclude Include="3d\GPSpatial.h">
+      <Filter>base\3d</Filter>
+    </ClInclude>
+    <ClInclude Include="3d\GPGeometry.h">
+      <Filter>base\3d</Filter>
+    </ClInclude>
+    <ClInclude Include="core\GPApplication.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="core\GPApplicationProtocol.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="core\GPDirector.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="core\GPScreen.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="data_structure\ArrayList.h">
+      <Filter>data_structures</Filter>
+    </ClInclude>
+    <ClInclude Include="data_structure\GPArrayList.h">
+      <Filter>data_structures</Filter>
+    </ClInclude>
+    <ClInclude Include="data_structure\GPStack.h">
+      <Filter>data_structures</Filter>
+    </ClInclude>
+    <ClInclude Include="data_structure\LinkList.h">
+      <Filter>data_structures</Filter>
+    </ClInclude>
+    <ClInclude Include="data_structure\List.h">
+      <Filter>data_structures</Filter>
+    </ClInclude>
+    <ClInclude Include="graphics\GPRenderTexture.h">
+      <Filter>graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="graphics\GPTexture.h">
+      <Filter>graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="graphics\GPTextureRegion.h">
+      <Filter>graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="graphics\GPVertexBuffer.h">
+      <Filter>graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="graphics\GPElementBuffer.h">
+      <Filter>graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="graphics\GPGLShader.h">
+      <Filter>graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="graphics\GPGLShaderProgram.h">
+      <Filter>graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="graphics\GPGLView.h">
+      <Filter>graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="graphics\GPImage.h">
+      <Filter>graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="graphics\GPModel.h">
+      <Filter>graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="io\GPFIleUtil.h">
+      <Filter>core\io</Filter>
+    </ClInclude>
+    <ClInclude Include="io\GPStringStream.h">
+      <Filter>core\io</Filter>
+    </ClInclude>
+    <ClInclude Include="io\ObjLoader.h">
+      <Filter>core\io</Filter>
+    </ClInclude>
+    <ClInclude Include="io\GPCharBuffer.h">
+      <Filter>core\io</Filter>
+    </ClInclude>
+    <ClInclude Include="io\GPFileStream.h">
+      <Filter>core\io</Filter>
+    </ClInclude>
+    <ClInclude Include="system\GPOpenGLStateManager.h">
+      <Filter>system</Filter>
+    </ClInclude>
+    <ClInclude Include="system\GPSystem.h">
+      <Filter>system</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\GPLogger.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="math\GPMatrix4.h">
+      <Filter>math</Filter>
+    </ClInclude>
+    <ClInclude Include="math\GPRect.h">
+      <Filter>math</Filter>
+    </ClInclude>
+    <ClInclude Include="math\GPTransform.h">
+      <Filter>math</Filter>
+    </ClInclude>
+    <ClInclude Include="math\GPVector.h">
+      <Filter>math</Filter>
+    </ClInclude>
+    <ClInclude Include="renderer\GPGLRenderer.h">
+      <Filter>renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="renderer\GPRenderer.h">
+      <Filter>renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="renderer\RenderDefs.h">
+      <Filter>renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="base\types.h">
+      <Filter>base</Filter>
+    </ClInclude>
+    <ClInclude Include="base\GPTimer.h">
+      <Filter>base</Filter>
+    </ClInclude>
+    <ClInclude Include="math\gpmath.h">
+      <Filter>math</Filter>
+    </ClInclude>
+    <ClInclude Include="renderer\Software\GPSoftwareRenderer.h">
+      <Filter>soft_renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="paltforms\win32\GPKeyHandler.h">
+      <Filter>platforms\win32</Filter>
+    </ClInclude>
+    <ClInclude Include="paltforms\win32\Resource.h">
+      <Filter>platforms\win32</Filter>
+    </ClInclude>
+    <ClInclude Include="paltforms\win32\stdafx.h">
+      <Filter>platforms\win32</Filter>
+    </ClInclude>
+    <ClInclude Include="paltforms\win32\targetver.h">
+      <Filter>platforms\win32</Filter>
+    </ClInclude>
+    <ClInclude Include="paltforms\win32\GPGLViewImp_Win32.h">
+      <Filter>platforms\win32</Filter>
+    </ClInclude>
+    <ClInclude Include="graphics\GPColorRGBA.h">
+      <Filter>graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="paltforms\win32\AppDelegate.h">
+      <Filter>platforms\win32</Filter>
+    </ClInclude>
+    <ClInclude Include="paltforms\win32\GPApplication_Win32.h">
+      <Filter>platforms\win32</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="TestScreen.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="base\GPObject.cpp">
+      <Filter>base</Filter>
+    </ClCompile>
+    <ClCompile Include="2d\GPNode.cpp">
+      <Filter>base\2d</Filter>
+    </ClCompile>
+    <ClCompile Include="3d\GPSpatial.cpp">
+      <Filter>base\3d</Filter>
+    </ClCompile>
+    <ClCompile Include="3d\GPGeometry.cpp">
+      <Filter>base\3d</Filter>
+    </ClCompile>
+    <ClCompile Include="core\GPDirector.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
+    <ClCompile Include="core\GPScreen.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
+    <ClCompile Include="graphics\GPRenderTexture.cpp">
+      <Filter>graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="graphics\GPTexture.cpp">
+      <Filter>graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="graphics\GPTextureRegion.cpp">
+      <Filter>graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="graphics\GPElementBuffer.cpp">
+      <Filter>graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="graphics\GPGLShader.cpp">
+      <Filter>graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="graphics\GPGLShaderProgram.cpp">
+      <Filter>graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="graphics\GPGLView.cpp">
+      <Filter>graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="graphics\GPImage.cpp">
+      <Filter>graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="graphics\GPModel.cpp">
+      <Filter>graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="io\GPFileUtil.cpp">
+      <Filter>core\io</Filter>
+    </ClCompile>
+    <ClCompile Include="io\GPStringStream.cpp">
+      <Filter>core\io</Filter>
+    </ClCompile>
+    <ClCompile Include="io\ObjLoader.cpp">
+      <Filter>core\io</Filter>
+    </ClCompile>
+    <ClCompile Include="io\GPCharBuffer.cpp">
+      <Filter>core\io</Filter>
+    </ClCompile>
+    <ClCompile Include="io\GPFileStream.cpp">
+      <Filter>core\io</Filter>
+    </ClCompile>
+    <ClCompile Include="system\GPOpenGLStateManager.cpp">
+      <Filter>system</Filter>
+    </ClCompile>
+    <ClCompile Include="utils\GPLogger.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="math\GPMatrix4.cpp">
+      <Filter>math</Filter>
+    </ClCompile>
+    <ClCompile Include="math\GPTransform.cpp">
+      <Filter>math</Filter>
+    </ClCompile>
+    <ClCompile Include="renderer\GPGLRenderer.cpp">
+      <Filter>renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="renderer\GPRenderer.cpp">
+      <Filter>renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="renderer\Software\GPSoftwareRenderer.cpp">
+      <Filter>soft_renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="paltforms\win32\GPKeyHandler.cpp">
+      <Filter>platforms\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="paltforms\win32\stdafx.cpp">
+      <Filter>platforms\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="paltforms\win32\GPGLViewImp_Win32.cpp">
+      <Filter>platforms\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="graphics\GPColorRGBA.cpp">
+      <Filter>graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="paltforms\win32\AppDelegate.cpp">
+      <Filter>platforms\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="paltforms\win32\GPApplication_Win32.cpp">
+      <Filter>platforms\win32</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="GPGame.rc">
+      <Filter>资源文件</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="small.ico">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="GPGame.ico">
+      <Filter>资源文件</Filter>
+    </Image>
+  </ItemGroup>
+</Project>
