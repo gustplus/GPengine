@@ -1,7 +1,2 @@
-#version 330
-in vec3 Color;
-layout ( location = 0 ) out vec4 FragColor;
-void main()
-{
-    FragColor = vec4(Color, 1.0);
-}
+^ /}D?+3Õø´¤ÕD?|XÏT@eüYH3¾<€§ˆƒ_¨€§ˆ>,£È
+xY@dÊıD?ª%`ÂÊ¢ VRæz¢Ÿ V,W=—òùH3›x_ÍØÏæö‰Íìnó†¿ÿş×Ê@ëÜ®®~

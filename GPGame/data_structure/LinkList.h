@@ -22,19 +22,19 @@ namespace GPEngine3D{
 		LinkList(void);
 		virtual ~LinkList(void);
 
-		virtual int length();
+		uint_32 length() override;
 
-		virtual bool insert(const T& data, int index);
-		virtual T removeWithIndex(int index);
-		virtual bool remove(const T&);
-		virtual int find(const T&);
-		virtual T &operator[](int index);
+		bool insert(const T& data, int index) override;
+		T removeWithIndex(int index) override;
+		bool remove(const T&) override;
+		int find(const T&) override;
+		T &operator[](int index) override;
 
-		virtual void pushback(const T& data);
-		virtual void pushfront(const T& data);
+		void pushback(const T& data) override;
+		void pushfront(const T& data) override;
         
-        virtual T popback();
-        virtual T popfront();
+        T popback() override;
+        T popfront() override;
 
 		iterator begin();
 		iterator end();
@@ -62,7 +62,7 @@ namespace GPEngine3D{
     }
     
     template<class T>
-    int LinkList<T>::length()
+    uint_32 LinkList<T>::length()
     {
         return List<T>::i_capacity;
     }

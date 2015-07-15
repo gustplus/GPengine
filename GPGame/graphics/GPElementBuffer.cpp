@@ -8,7 +8,6 @@
 
 #include "GPElementBuffer.h"
 #include "stdafx.h"
-#include "gp.h"
 
 US_NS_GP;
 
@@ -51,7 +50,7 @@ bool ElementBuffer::genElementBuffer(const unsigned short *indices)
     return true;
 }
 
-void ElementBuffer::changeElementDataAt(uint index, const unsigned short *data)
+void ElementBuffer::changeElementDataAt(uint_32 index, const unsigned short *data)
 {
     if (index < _num)
     {
@@ -63,7 +62,7 @@ void ElementBuffer::changeElementDataAt(uint index, const unsigned short *data)
     
 }
 
-void ElementBuffer::changeElementDataWithRange(uint startIndex, uint length, const unsigned short *data)
+void ElementBuffer::changeElementDataWithRange(uint_32 startIndex, uint_32 length, const unsigned short *data)
 {
     if (startIndex >= _num)
     {

@@ -1,23 +1,4 @@
-//
-//  Shader.vsh
-//  GPEngine
-//
-//  Created by shizhan on 14-8-30.
-//  Copyright (c) 2014å¹´ ___GUSTPLUS___. All rights reserved.
-//
-
-attribute vec4 position;
-attribute vec3 normal;
-
-varying lowp vec4 colorVarying;
-
-uniform mat4 modelViewProjectionMatrix;
-uniform mat3 normalMatrix;
-
-void main()
-{
-    vec4 diffuseColor = vec4(0.4, 0.4, 1.0, 1.0);
-    colorVarying = diffuseColor
-    
-    gl_Position = modelViewProjectionMatrix * position;
-}
+ÎpÓ[Û×E£~XÔO?™7‰·±i¦W kŒB;‡µ”•×K’uÑúLÂ
+$r&Œ¼Õ)[rh/¯9çŒ3ğüsš„Ç¸P2O]ÃM‚à†½a%0Ò¡ÜN°îa\¿a³Êá%²D¡UÇİ•ìªœÈ—ºôœ¼ˆÏö§É#±ÿô}‚ÜOqÕËkB2“ûYƒn²aÜeôÏé×úóî´ÛÍ)Üç
+æ÷ŒĞ\u|p¹ƒfÆaÂ|òëÅ_Hğ
+ø\%Õ‡Åõœ”,BëÇZÿ5<“Ã‘ŸmaŞûY×“«(TYç_İAá‚äÿö3‹ò”ø­Óí#ñ[šÅ/jîs{˜İwiº÷IæÌ¼®ièÛ›™†w]MK0æb˜_TSø[#Îü1ßÓîKß¼ızl03‡Åú•Üh¹î÷ú>üMKº…ÒAò¨´ôO5ä}V¤|¶Îîvş;SÓCgF>Ãq2­¯låÖçºS‹|E	ÿÿÛúõı-åAÿR§aCÄ«æ_¡Rğ†ßÚµÓ×JİJev›éü§Üëé<9½ˆ^ÍúoQƒàÉ6ÕHwŞĞ“Ú¢ÚcÒ¹ªz›¤ã“b<¤é

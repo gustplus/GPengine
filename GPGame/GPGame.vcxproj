@@ -162,6 +162,7 @@
     <ClCompile Include="io\GPFileUtil.cpp" />
     <ClCompile Include="io\GPStringStream.cpp" />
     <ClCompile Include="io\ObjLoader.cpp" />
+    <ClCompile Include="math\gpmath.cpp" />
     <ClCompile Include="math\GPMatrix4.cpp" />
     <ClCompile Include="math\GPTransform.cpp" />
     <ClCompile Include="paltforms\win32\AppDelegate.cpp" />

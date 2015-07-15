@@ -14,12 +14,13 @@ namespace GPEngine3D{
 	class Matrix4
 	{   
 	public:
+        friend Matrix4 &operator*=(Matrix4 &mat0, const Matrix4 &mat1);
+        
 		Matrix4(void);
         Matrix4(const Matrix4 &);
 		~Matrix4(void);
-        
-		friend Matrix4 &operator*=(Matrix4 &mat0, const Matrix4 &mat1);
-        friend Matrix4 operator *(const Matrix4 &mat0, const Matrix4 &mat1);
+
+        //Matrix4 operator *(const Matrix4 &mat);
 
         vec4f operator *(const vec4f &vec) const;
 

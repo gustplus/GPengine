@@ -4,6 +4,7 @@
 #include "gpimage.h"
 #include "gp.h"
 #include "GPSmartPtr.h"
+#include "types.h"
 
 namespace GPEngine3D
 {

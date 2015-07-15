@@ -1,14 +1,1 @@
-//
-//  Shader.fsh
-//  GPEngine
-//
-//  Created by shizhan on 14-8-30.
-//  Copyright (c) 2014å¹´ ___GUSTPLUS___. All rights reserved.
-//
-
-varying lowp vec4 colorVarying;
-
-void main()
-{
-    gl_FragColor = colorVarying;
-}
+ıé÷ûïÓµSòzKË¶=¬i¿ ãŒÉ2(ÛKîÔÛU©EQW×ÄÍø-KX].¤‘M™–Û/Qô3V_õ®xºX\9Kû¿©q§}És70"šbÉÜé¯d^¡¸H¿u®ñ{İìLã£zÖ”<Vñï«Ñxç;êÄtJŞÿÿ±×"óFp­ˆ—Œôu„ÅY½'Šòsú¡.[6}ô¶\dsÃ;Îã"á^×õx]öµ6L['EÛÂªBŸl»;Â¼#»1¾.Ùu®«ïèêi*l÷xÆÔË5y˜£! 

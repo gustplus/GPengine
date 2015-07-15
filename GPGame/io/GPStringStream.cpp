@@ -9,13 +9,12 @@ namespace GPEngine3D {
     
     StringStream::~StringStream(void)
     {
-        GP_DELETE buffer;
+        GP_SAFE_DELETE_ARRAY(buffer);
     }
     
     void StringStream::Init(char* value, int length)
     {
-        if(buffer)
-            GP_DELETE[] buffer;
+        GP_SAFE_DELETE_ARRAY(buffer);
         buffer = value;
         i_size = length;
     }

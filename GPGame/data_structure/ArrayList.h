@@ -13,24 +13,24 @@ namespace GPEngine3D{
 	public:
 		typedef T *iterator;
 
-		ArrayList(int capacity = 10, int increaceSize = 10);
+		ArrayList(uint_32 capacity = 10, uint_32 increaceSize = 10);
 		virtual ~ArrayList(void);
 
 		bool insert(const T* data, int length, int index);
 		bool replace(const T* data, int length, int index);
 
 		T* toArray();
-		virtual int length();
+		uint_32 length() override;
 
-		virtual bool insert(const T& data, int index);
-		virtual T removeWithIndex(int index);
-		virtual bool remove(const T&);
-		virtual int find(const T&);
-		virtual T& operator[](int index);
-		virtual const T &operator[](int index) const;
+		bool insert(const T& data, int index) override;
+		T removeWithIndex(int index) override;
+		bool remove(const T&) override;
+		int find(const T&) override;
+		T& operator[](int index) override;
+		const T &operator[](int index) const override;
 
-		virtual void pushback(const T& data);
-		virtual void pushfront(const T& data);
+		void pushback(const T& data) override;
+		void pushfront(const T& data) override;
 		iterator begin();
 		iterator end();
 
@@ -38,34 +38,34 @@ namespace GPEngine3D{
 		
 
 	private:
-		void resize(int newSize);
+		void _resize(uint_32 newSize);
 
-		int i_size;
+		uint_32 i_size;
 
-		int i_increaseSize;
+		uint_32 i_increaseSize;
 
 		T *array;
 	};
     
     template<class T>
-    ArrayList<T>::ArrayList(int capacity, int increaceSize) : List<T>(capacity), i_size(0), i_increaseSize(increaceSize)
+    ArrayList<T>::ArrayList(uint_32 capacity, uint_32 increaceSize) : List<T>(capacity), i_size(0), i_increaseSize(increaceSize)
     {
-        array = GP_NEW T[List<T>::i_capacity];
+        array = GP_NEW_ARRAY(T, List<T>::i_capacity);
     }
     
     template<class T>
     ArrayList<T>::~ArrayList(void)
     {
-        GP_DELETE array;
+        GP_DELETE_ARRAY(array);
     }
     
     template<class T>
-    void ArrayList<T>::resize(int newSize)
+    void ArrayList<T>::_resize(uint_32 newSize)
     {
-        T *newArray = GP_NEW T[newSize];
+        T *newArray = GP_NEW_ARRAY(T, newSize);
         memcpy(newArray, array, i_size * sizeof(T));
         List<T>::i_capacity = newSize;
-        GP_DELETE array;
+        GP_DELETE_ARRAY(array);
         array = newArray;
     }
     
@@ -76,7 +76,7 @@ namespace GPEngine3D{
     }
     
     template<class T>
-    int ArrayList<T>::length()
+    uint_32 ArrayList<T>::length()
     {
         return i_size;
     }
@@ -93,7 +93,7 @@ namespace GPEngine3D{
         }
         while(i_size + length > List<T>::i_capacity)
         {
-            resize(List<T>::i_capacity+i_increaseSize);
+            _resize(List<T>::i_capacity+i_increaseSize);
         }
         if(index == i_size)
         {
@@ -121,7 +121,7 @@ namespace GPEngine3D{
         }
         while(i_size + length > List<T>::i_capacity)
         {
-            resize(List<T>::i_capacity+i_increaseSize);
+            _resize(List<T>::i_capacity+i_increaseSize);
         }
         
         memcpy(array + index, data, length);
@@ -142,7 +142,7 @@ namespace GPEngine3D{
         if(i_size == List<T>::i_capacity)
         {
             std::cout<<"resize"<<std::endl;
-            resize(List<T>::i_capacity+i_increaseSize);
+            _resize(List<T>::i_capacity+i_increaseSize);
         }
         if(index == i_size)
         {
@@ -168,11 +168,11 @@ namespace GPEngine3D{
     {
         if(index  > i_size-1 || index < 0)
         {
-            return NULL;
+            return nullptr;
         }
         if(index == i_size-1)
         {
-            array[index] = NULL;
+            array[index] = nullptr;
         }
         
         T remove = array[index];
@@ -186,7 +186,7 @@ namespace GPEngine3D{
     template<class T>
     int ArrayList<T>:: find(const T &target)
     {
-        if(NULL == target)
+        if(nullptr == target)
             return -1;
         
         for(int i = 0; i_size; ++i)
@@ -223,7 +223,7 @@ namespace GPEngine3D{
         if(index > i_size){
 			size_t newSize = i_size;
 			while ((newSize += i_increaseSize) < index ){}
-			resize(newSize);
+			_resize(newSize);
 		}
 		return array[index];
     }

@@ -13,6 +13,7 @@
 #include "gp.h"
 #include "glfunc.h"
 #include "GPRect.h"
+#include "types.h"
 
 namespace GPEngine3D {
     class OpenGLStateManager{
@@ -21,7 +22,7 @@ namespace GPEngine3D {
         
         void useBlendFunc(BlendFactor srcFactor, BlendFactor dstFactor);
         
-        void setLineWidth(uint width);
+        void setLineWidth(uint_32 width);
         
         void enableDepthBuffer(bool enableDepth);
         

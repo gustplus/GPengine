@@ -119,7 +119,7 @@ bool ObjLoader::Load(const char* fileName/*, VertexBuffer *buffer*/)
 	switch(attribNum)
 	{
 	case 3:
-		normalBuffer = GP_NEW_ARRAY float[3*face*3];
+		normalBuffer = GP_NEW_ARRAY(float, 3*face*3);
 		size = normalIndice.size();
 		for(size_t i = 0;i < size; ++i)
 		{
@@ -128,9 +128,9 @@ bool ObjLoader::Load(const char* fileName/*, VertexBuffer *buffer*/)
 			normalBuffer[offset+1] = normals[normalIndice[i]].y;
 			normalBuffer[offset+2] = normals[normalIndice[i]].z;
 		}
-            GP_DELETE_ARRAY normalBuffer;
+            GP_DELETE_ARRAY(normalBuffer);
 	case 2:
-		texcoordBuffer = GP_NEW_ARRAY float[3*face*2];
+		texcoordBuffer = GP_NEW_ARRAY(float, 3*face*2);
 		size = texcIndice.size();
 		for(int i = 0;i < size; ++i)
 		{
@@ -138,9 +138,9 @@ bool ObjLoader::Load(const char* fileName/*, VertexBuffer *buffer*/)
 			texcoordBuffer[offset] = texcoords[texcIndice[i]].x;
 			texcoordBuffer[offset+1] = texcoords[texcIndice[i]].y;
 		}
-        GP_DELETE_ARRAY texcoordBuffer;
+        GP_DELETE_ARRAY(texcoordBuffer);
 	case 1:
-		vetexBuffer = GP_NEW_ARRAY float[3*face*3];
+		vetexBuffer = GP_NEW_ARRAY(float, 3*face*3);
 		size = verIndice.size();
 		for(int i = 0;i < size; ++i)
 		{
@@ -149,7 +149,7 @@ bool ObjLoader::Load(const char* fileName/*, VertexBuffer *buffer*/)
 			vetexBuffer[offset+1] = points[verIndice[i]].y;
 			vetexBuffer[offset+2] = points[verIndice[i]].z;
 		}
-        GP_DELETE_ARRAY vetexBuffer;
+        GP_DELETE_ARRAY(vetexBuffer);
 	}
     return true;
 }

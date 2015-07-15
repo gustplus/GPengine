@@ -7,10 +7,9 @@
 using namespace GPEngine3D;
 using std::string;
 
-FileStream::FileStream(void) : buffer(CharBuffer(512)) ,isReady(false), validFile(nullptr), fileName(0), l_pPerPosition(0)
+FileStream::FileStream(void) : buffer(CharBuffer(512)) ,isReady(false), validFile(nullptr), fileName(nullptr), l_pPerPosition(0)
 {
 }
-
 
 FileStream::~FileStream(void)
 {
@@ -22,7 +21,7 @@ FileStream::~FileStream(void)
 	}
 	if(fileName)
 	{
-		GP_DELETE fileName;
+		GP_DELETE_ARRAY(fileName);
 	}
 }
 
@@ -41,11 +40,8 @@ bool FileStream::Open(const char* c_pFileName, bool clear)
 	if(validFile)
 	{
 		int strLength = strlen(c_pFileName)+1;
-		if(fileName)
-		{
-			GP_DELETE fileName;
-		}
-		fileName = GP_NEW char[strLength];
+		GP_SAFE_DELETE(fileName);
+		fileName = GP_NEW_ARRAY(char, strLength);
 		strcpy(fileName, c_pFileName);
 		isReady = true;
 	}

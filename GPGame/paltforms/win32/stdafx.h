@@ -1,6 +1,6 @@
-// stdafx.h : ╠Йв╪о╣мЁ╟Э╨╛нд╪Ч╣д╟Э╨╛нд╪Чё╛
-// ╩Рйг╬╜Ёёй╧сц╣╚╡╩Ёё╦Э╦д╣д
-// ль╤╗сзоНд©╣д╟Э╨╛нд╪Ч
+// stdafx.h : Ф═┤Е┤├ГЁ╩Г╩÷Е▄┘Е░╚Ф√┤Д╩╤Г └Е▄┘Е░╚Ф√┤Д╩╤О╪▄
+// Ф┬√Ф≤╞Г╩▐Е╦╦Д╫©Г■╗Д╫├Д╦█Е╦╦Ф⌡╢Ф■╧Г └
+// Г┴╧Е╝ Д╨▌И║╧Г⌡╝Г └Е▄┘Е░╚Ф√┤Д╩╤
 //
 
 #ifndef _AFX_H_
@@ -9,13 +9,13 @@
 #include "targetver.h"
 
 #ifdef GP_PLATFORM_WIN32
-#define WIN32_LEAN_AND_MEAN             //  ╢с Windows м╥нд╪ЧжпееЁЩ╪╚иый╧сц╣дпео╒
-// Windows м╥нд╪Ч:
+#define WIN32_LEAN_AND_MEAN             //  Д╩▌ Windows Е╓╢Ф√┤Д╩╤Д╦╜Ф▌▓И≥╓Ф·│Е╟▒Д╫©Г■╗Г └Д©║Ф│╞
+// Windows Е╓╢Ф√┤Д╩╤:
 #include <windows.h>
 
 #endif
 
-// C ткппй╠м╥нд╪Ч
+// C Х©░Х║▄Ф≈╤Е╓╢Ф√┤Д╩╤
 #include <stdlib.h>
 #include <malloc.h>
 #include <memory.h>

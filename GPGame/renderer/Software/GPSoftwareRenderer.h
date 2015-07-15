@@ -26,7 +26,7 @@ namespace GPEngine3D{
 		void drawLine(const Point2i &v0, const Point2i &v1, const Color3b &color);
 		void drawLine(int x0, int y0, int x1, int y1, const Color3b &color);
 
-		void drawTriangleSolid(PolyTriangle *triangle);
+		void drawTriangleSolid(const PolyTriangle &triangle);
 		void drawTriangleSolid(const Vertex &v0, const Vertex & v1, const Vertex &v2);
 		void drawTriangleSolid(const Point2f &v0, const Point2f &v1, const Point2f &v2, const Color3b &color);
 		void drawTriangleSolid(int x0, int y0, int x1, int y1, int x2, int y2, const Color3b &color);
@@ -35,11 +35,8 @@ namespace GPEngine3D{
 		void clearBuffer(ATTR_FLAG flags);
 		void setClearColor(const ColorRGBA &color) override;
 
-		void vertexAttribPosPointer(PolyObject *buffer, bool normalize, uint_32 stride, GLfloat *const vertices, uint_32 count);
-		void vertexAttribColorPointer(PolyObject *buffer, bool normalize, uint_32 stride, byte *const colors, uint_32 count);
-
-		void drawArray(PolyObject *buffer, uint_32 offset, const Matrix4 &mat, uint_32 count);
-		void drawElements(RenderList *buffer, uint_32 offset, GLushort *const indices, const Matrix4 &mat, uint_32 count);
+		void drawArray(PolyObject *buffer, uint_32 offset, const Matrix4 &mat, uint_32 faceCount);
+		void drawElements(RenderList *buffer, GLushort *const indices, const Matrix4 &mat, uint_32 count);
 
 		void _clearColorBuffer();
 		void _clearDepthBuffer();

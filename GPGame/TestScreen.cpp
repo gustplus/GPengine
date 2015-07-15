@@ -11,6 +11,10 @@ TestScreen::TestScreen(void):
 	view(PixelFormat::RGB, 8, 24, true, 800, 480)
 {
 	view.setClearColor(ColorRGBA(0,0,0,1));
+
+	view.enable(ATTR_FLAG::DEPTH_BUFFER);
+
+	//update(0);
 }
 
 
@@ -21,7 +25,7 @@ TestScreen::~TestScreen(void)
 void TestScreen::update(double deltaTime){
 	static float offsetY = 0;
 	static float offsetX = 0;
-	static float offsetZ = -20;
+	static float offsetZ = -80;
 
 	int x = KeyHandler::getInstance()->mouseX;
 	int y = KeyHandler::getInstance()->mouseY;
@@ -30,10 +34,10 @@ void TestScreen::update(double deltaTime){
 	//glClearColor(r,0,b,1);
 
 	//if(KeyHandler::getInstance()->isMouseLeftDown())
-		offsetZ += KeyHandler::getInstance()->rollDir * deltaTime;
+		offsetZ += KeyHandler::getInstance()->rollDir * deltaTime * 7;
 	
 	
-	view.clearBuffer();
+		view.clearBuffer();
 	
 	Color3b colorR = {255,0,0};
 	Color3b colorG = {0,255,0};
@@ -62,21 +66,11 @@ void TestScreen::update(double deltaTime){
 	*/
 	
 	Matrix4 mat;
-	mat.frustum(-1, 1, -0.6, 0.6, 0.1, 100);
-
-	//GLfloat vertices1[] = {-20, -20, -10 - offset, 20, -20, -10 - offset, -20, 20, -10 - offset}; 
-	//view.drawArray(vertices1, mat, 3, colorB);
-
-	GLfloat vertices2[] = {100, -100, -20, 
-						   100, -100, -40, 
-						   100, -40, -20}; 
-	//view.drawArray(vertices2, mat, 3, colorG);
-
-	//view.drawTriangleSolid(600, 39, 500, 139, 600, 159, colorW);
+	mat.frustum(-0.01, 0.01, -0.006, 0.006, 0.01, 100);
 	
-	float halfX = 10;
-	float halfY = 10;
-	float halfZ = 10;
+	float halfX = 5;
+	float halfY = 5;
+	float halfZ = 5;
 
 	GLfloat vertices[] = { -halfX + offsetX, halfY - offsetY, halfZ + offsetZ,
 						   -halfX + offsetX, -halfY - offsetY, halfZ + offsetZ,
@@ -86,13 +80,71 @@ void TestScreen::update(double deltaTime){
 							-halfX + offsetX, -halfY - offsetY, -halfZ + offsetZ,
 							halfX + offsetX, halfY - offsetY, -halfZ + offsetZ,
 							halfX + offsetX, -halfY - offsetY, -halfZ + offsetZ};
-	GLushort indices[] = { 0, 1, 2, 1, 2, 3, 4, 5, 0, 0, 5, 1, 2, 3, 6, 3, 6, 7, 6, 7, 5, 6, 5, 4, 0, 6, 4, 0, 2, 6, 1, 5, 3, 3, 5, 7 };
+
+	GLubyte colors[] = {255, 0, 0, 255,
+						0, 255, 0, 255,
+						0, 0, 255, 255,
+						255, 255, 255, 255,
+						255, 0, 0, 255,
+						0, 255, 0, 255,
+						0, 0, 255, 255,
+						255, 255, 255, 255};
+
+	GLushort indices[] = { 0, 1, 2, 1, 3, 2,
+						   4, 5, 0, 0, 5, 1,
+						   2, 3, 6, 3, 6, 7,
+						   6, 7, 5, 6, 5, 4,
+						   0, 6, 4, 0, 2, 6,
+						   1, 5, 3, 3, 5, 7 };
+
+	cube0.vertexAttribPosPointer(false, 0, vertices, 8);
+	cube0.vertexAttribColorPointer(false, 0, colors, 8);
+
+	GLfloat vertices1[] = { -halfX - offsetX, halfY + offsetY, halfZ + offsetZ,
+						   -halfX - offsetX, -halfY + offsetY, halfZ + offsetZ,
+						   halfX - offsetX, halfY + offsetY, halfZ + offsetZ,
+						   halfX - offsetX, -halfY + offsetY, halfZ + offsetZ,
+							-halfX - offsetX, halfY + offsetY, -halfZ + offsetZ,
+							-halfX - offsetX, -halfY + offsetY, -halfZ + offsetZ,
+							halfX - offsetX, halfY + offsetY, -halfZ + offsetZ,
+							halfX - offsetX, -halfY + offsetY, -halfZ + offsetZ};
+
+	cube1.vertexAttribPosPointer(false, 0, vertices1, 8);
+	cube1.vertexAttribColorPointer(false, 0, colors, 8);
+
+	GLfloat vertices2[] = { -halfX - offsetX, halfY - offsetY, halfZ + offsetZ,
+						   -halfX - offsetX, -halfY - offsetY, halfZ + offsetZ,
+						   halfX - offsetX, halfY - offsetY, halfZ + offsetZ,
+						   halfX - offsetX, -halfY - offsetY, halfZ + offsetZ,
+							-halfX - offsetX, halfY - offsetY, -halfZ + offsetZ,
+							-halfX - offsetX, -halfY - offsetY, -halfZ + offsetZ,
+							halfX - offsetX, halfY - offsetY, -halfZ + offsetZ,
+							halfX - offsetX, -halfY - offsetY, -halfZ + offsetZ};
+
+	cube2.vertexAttribPosPointer(false, 0, vertices2, 8);
+	cube2.vertexAttribColorPointer(false, 0, colors, 8);
+
+	GLfloat vertices3[] = { -halfX + offsetX, halfY + offsetY, halfZ + offsetZ,
+						   -halfX + offsetX, -halfY + offsetY, halfZ + offsetZ,
+						   halfX + offsetX, halfY + offsetY, halfZ + offsetZ,
+						   halfX + offsetX, -halfY + offsetY, halfZ + offsetZ,
+							-halfX + offsetX, halfY + offsetY, -halfZ + offsetZ,
+							-halfX + offsetX, -halfY + offsetY, -halfZ + offsetZ,
+							halfX + offsetX, halfY + offsetY, -halfZ + offsetZ,
+							halfX + offsetX, -halfY + offsetY, -halfZ + offsetZ};
+
+	cube3.vertexAttribPosPointer(false, 0, vertices3, 8);
+	cube3.vertexAttribColorPointer(false, 0, colors, 8);
 	
-	//view.drawElements(vertices, indices, mat, 36, colorG);
+
+	view.drawElements(&cube0, indices , mat, 36);
+	view.drawElements(&cube1, indices , mat, 36);
+	view.drawElements(&cube2, indices , mat, 36);
+	view.drawElements(&cube3, indices , mat, 36);
 	
 	view.swapBuffer();
-	offsetY = -24 + y * 0.1;
-	offsetX = -40 + x * 0.1;
+	offsetY = -48 + y * 0.2;
+	offsetX = -80 + x * 0.2;
 }
 void TestScreen::present(){
 	

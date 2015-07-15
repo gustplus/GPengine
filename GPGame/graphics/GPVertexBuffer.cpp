@@ -32,7 +32,7 @@ namespace GPEngine3D {
     }
     
 	template<class T, int num_per_vertex>
-    void VertexBuffer::changeVertexDataAt(uint index, const T *data)
+    void VertexBuffer::changeVertexDataAt(uint_32 index, const T *data)
     {
         if (index < _num)
         {
@@ -45,7 +45,7 @@ namespace GPEngine3D {
     }
     
 	template<class T, int num_per_vertex>
-    void VertexBuffer::changeVertexDataWithRange(uint startIndex, uint length, const T *data)
+    void VertexBuffer::changeVertexDataWithRange(uint_32 startIndex, uint_32 length, const T *data)
     {
         if (startIndex >= _num)
         {
@@ -75,7 +75,7 @@ namespace GPEngine3D {
     }
     
 	template<class T, int num_per_vertex>
-    float *VertexBuffer::mapData(uint startIndex, int length, bool isRead)
+    float *VertexBuffer::mapData(uint_32 startIndex, int length, bool isRead)
     {
         if (_isMapingData)
         {

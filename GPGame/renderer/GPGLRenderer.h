@@ -5,29 +5,29 @@
 
 namespace GPEngine3D{
 
-	class GLRenderer :
-		public Renderer
-	{
-	public:
-		GLRenderer(PixelFormat pFormat, char depthBits, char stencilBits, bool doubleBuffer, int width, int height);
-		~GLRenderer(void);
+    class GLRenderer :
+        public Renderer
+    {
+    public:
+        GLRenderer(PixelFormat pFormat, char depthBits, char stencilBits, bool doubleBuffer, int width, int height);
+        ~GLRenderer(void);
 
-		bool initContent(HWND window);
+        bool initContent(HWND window);
 
-		bool releaseContent();
+        bool releaseContent();
 
-		void setClearColor(const ColorRGBA &color) override;
+        void setClearColor(const ColorRGBA &color) override;
 
-		void clearBuffer() override;
+        void clearBuffer() override;
 
-		void swapBuffer() override;
+        void swapBuffer() override;
 
-		void resizeViewPort(int width, int height) override;
+        void resizeViewPort(int width, int height) override;
 
-	private:
-		HWND _hWindow;
-		HDC _hDeviceContext;
-		HGLRC _hWindowRC;
-	};
+    private:
+        HWND _hWindow;
+        HDC _hDeviceContext;
+        HGLRC _hWindowRC;
+    };
 }
 #endif

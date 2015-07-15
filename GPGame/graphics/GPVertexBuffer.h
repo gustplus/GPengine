@@ -3,6 +3,7 @@
 
 #include "gp.h"
 #include "glfunc.h"
+#include "types.h"
 
 /*
  *you can use VertexBuffer to store vertex data, include vertex position, colors, and user defined datas
@@ -130,7 +131,7 @@ namespace GPEngine3D
             return true;
         }
         
-        void changeVertexDataAt(uint index, const T *data)
+        void changeVertexDataAt(uint_32 index, const T *data)
         {
             if (index < _num)
             {
@@ -141,7 +142,7 @@ namespace GPEngine3D
             }
         }
         
-        void changeVertexDataWithRange(uint startIndex, uint length, const T *data)
+        void changeVertexDataWithRange(uint_32 startIndex, uint_32 length, const T *data)
         {
             if (startIndex >= _num)
             {
@@ -156,7 +157,7 @@ namespace GPEngine3D
         }
         
 #ifdef GLES3
-        float *mapData(uint start, int length, bool isRead)
+        float *mapData(uint_32 start, int length, bool isRead)
         {
             if (_isMapingData)
             {

@@ -12,6 +12,7 @@
 #include <iostream>
 #include "gp.h"
 #include "GPSmartPtr.h"
+#include "types.h"
 
 namespace GPEngine3D{
     enum ImageFormat{

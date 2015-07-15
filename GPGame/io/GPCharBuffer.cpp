@@ -4,14 +4,14 @@
 namespace GPEngine3D {
     CharBuffer::CharBuffer(int iMaxSize) : ui_capacity(iMaxSize), used(0), next_size(0)
     {
-        c_buffer = GP_NEW char[iMaxSize+1];
+        c_buffer = GP_NEW_ARRAY(char, iMaxSize + 1);
     }
     
     
     CharBuffer::~CharBuffer(void)
     {
         if(c_buffer)
-            GP_DELETE c_buffer;
+            GP_DELETE_ARRAY(c_buffer);
     }
     
     bool CharBuffer::Flush(std::FILE* file)
@@ -25,7 +25,7 @@ namespace GPEngine3D {
         return true;
     }
     
-    bool CharBuffer::Write(const char* value, std::size_t length )
+    bool CharBuffer::Write(const char* value, std::size_t length)
     {
         if(c_buffer)
         {

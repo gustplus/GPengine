@@ -10,11 +10,11 @@ namespace GPEngine3D {
     bDoubleBuffer(doubleBuffer),
     iWidth(width),
     iHeight(height),
-	iLeftX(x),
-	iBottomY(y),
+    iLeftX(x),
+    iBottomY(y),
     colorBytes(3)
     {
-		if(pFormat == PixelFormat::RGB)
+        if(pFormat == PixelFormat::RGB)
             colorBytes = 3;
         if(pFormat == PixelFormat::RGBA)
             colorBytes = 4;

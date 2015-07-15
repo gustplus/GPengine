@@ -226,7 +226,7 @@
       <Filter>platforms\win32</Filter>
     </ClInclude>
     <ClInclude Include="renderer\GPRenderStructures.h">
-      <Filter>soft_renderer</Filter>
+      <Filter>renderer</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -333,7 +333,10 @@
       <Filter>platforms\win32</Filter>
     </ClCompile>
     <ClCompile Include="renderer\GPRenderStructures.cpp">
-      <Filter>soft_renderer</Filter>
+      <Filter>renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="math\gpmath.cpp">
+      <Filter>math</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -1,46 +1,39 @@
 #ifndef _GPMATH_H_
 #define _GPMATH_H_
 
+#include <math.h>
+#include "types.h"
+
 #define PI 3.14159f;
 #define TO_RADIANS ((1 / 180f) * (float) PI)
 #define TO_DEGREES ((1 / (float) PI) * 180)
+namespace GPEngine3D{
+	class Math{
+	public:
+		static int_32 ceil(double var);
 
-inline int d_ceil(double var)
-{
-	if(var < 0)
-	{
-		return (int) var;
-	}
-	int intVar = (int)var;
-	if(intVar < var)
-	{
-		return (intVar + 1);
-	}else{
-		return intVar;
-	}
-}
+		static int_32 floor(double var);
 
-inline int d_floor(double var)
-{
-	if(var > 0)
-	{
-		return (int)var;
-	}
-	
-	int intVar = (int)var;
-	if(intVar > var){
-		return (intVar - 1);
-	}else{
-		return intVar;
-	}
-}
+		static double sin(double p_x);
 
-template<class T>
-inline void swap(T &a, T &b)
-{
-	T &tmp = a;
-	a = b;
-	b = tmp;
+		static double cos(double p_x);
+
+		static double tan(double p_x);
+
+		static double sinh(double p_x);
+
+		static double cosh(double p_x);
+
+		static double tanh(double p_x);
+
+		static double asin(double p_x);
+
+		static double acos(double p_x);
+
+		static double atan(double p_x);
+
+		static double atan2(double p_y, double p_x);
+	};
 }
 
 #endif

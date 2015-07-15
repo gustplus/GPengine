@@ -1,6 +1,8 @@
 #ifndef __LIST__
 #define __LIST__
 
+#include "types.h"
+
 namespace GPEngine3D{
 	template<class T>
 	class List
@@ -20,10 +22,10 @@ namespace GPEngine3D{
 	    virtual void pushback(const T& data) = 0;
 		virtual void pushfront(const T& data) = 0;
         
-        virtual T popback() = 0;
-        virtual T popfront() = 0;
+        // virtual T popback() = 0;
+        // virtual T popfront() = 0;
 
-		virtual int length() = 0;
+		virtual uint_32 length() = 0;
 
 	protected:
 		int i_capacity;

@@ -125,11 +125,11 @@ namespace GPEngine3D{
 		drawLine(v0.x, v0.y, v1.x, v1.y, color);
 	}
 
-	void SoftwareRenderer::drawTriangleSolid(PolyTriangle *triangle)
+	void SoftwareRenderer::drawTriangleSolid(const PolyTriangle &triangle)
 	{
-		Vertex &v0 = triangle->tranList[0];
-		Vertex &v1 = triangle->tranList[1];
-		Vertex &v2 = triangle->tranList[2];
+		const Vertex &v0 = triangle.tranList[0];
+		const Vertex &v1 = triangle.tranList[1];
+		const Vertex &v2 = triangle.tranList[2];
 
 		drawTriangleSolid(v0, v1, v2);
 	}
@@ -149,7 +149,7 @@ namespace GPEngine3D{
 		float rArr[3] = {v0.color.r * v0.p.w, v1.color.r * v1.p.w, v2.color.r * v2.p.w};
 		float gArr[3] = {v0.color.g * v0.p.w, v1.color.g * v1.p.w, v2.color.g * v2.p.w};
 		float bArr[3] = {v0.color.b * v0.p.w, v1.color.b * v1.p.w, v2.color.b * v2.p.w};
-		float bArr[3] = {v0.color.a * v0.p.w, v1.color.a * v1.p.w, v2.color.a * v2.p.w};
+		float aArr[3] = {v0.color.a * v0.p.w, v1.color.a * v1.p.w, v2.color.a * v2.p.w};
 
 		if((xArr[0] == xArr[1] && xArr[1] == xArr[2]) || (yArr[0] == yArr[1] && yArr[1] == yArr[2]))
 		{
@@ -425,7 +425,7 @@ namespace GPEngine3D{
 					br += dbr * dy;
 					al += dal * dy;
 					ar += dar * dy;
-					dy = iTopY;
+					yt = iTopY;
 				}
 				int end_y = mid_y > iBottomY ? mid_y : iBottomY;
 				while (yt > end_y)
@@ -705,22 +705,37 @@ namespace GPEngine3D{
 		}
 	}
 
-	void SoftwareRenderer::drawArray(PolyObject *buffer, uint_32 offset, const Matrix4 &mat, uint_32 count)
+	void SoftwareRenderer::drawArray(PolyObject *buffer, uint_32 offset, const Matrix4 &mat, uint_32 faceCount)
 	{
-		_cameraToProjectionTransform(buffer, offset, mat, count);
-		_ProjectionToScreenTransform(buffer, offset, count);
-		for (int index = offset; index < offset + count; ++index)
+		_cameraToProjectionTransform(buffer, offset, mat, faceCount);
+		_ProjectionToScreenTransform(buffer, offset, faceCount);
+
+		for(int index = offset; index < offset + faceCount; ++index)
 		{
 			drawTriangleSolid(buffer->triangleArray[index]);
 		}
 	}
-	//todo
-	void SoftwareRenderer::drawElements(RenderList *buffer, uint_32 offset, GLushort *const indices, const Matrix4 &mat, uint_32 count)
+	
+	void SoftwareRenderer::drawElements(RenderList *buffer, GLushort *const indices, const Matrix4 &mat, uint_32 count)
 	{
-		for (int index = offset; index < offset + count; ++index)
+		uint_32 size = buffer->size();
+		for(int idx = 0; idx < size; ++idx)
 		{
-			buffer->tranList[index].p = projMat * buffer->localList[index].p;
-			drawTriangleSolid(&buffer->triangleArray[index]);
+			buffer->tranList[idx].p = mat * buffer->localList[idx].p;
+			vec4f &v = buffer->tranList[idx].p;
+			float inv_w = 1.0f / v.w;
+			v.x = (v.x * inv_w + 1.0f) * iWidth * 0.5f;
+			v.y = (v.y * inv_w + 1.0f) * iHeight * 0.5f;
+			v.z = v.w;
+			v.w = -inv_w;
+		}
+
+		for(int index = 0; index < count; )
+		{
+			Vertex &v0 = buffer->tranList[indices[index++]];
+			Vertex &v1 = buffer->tranList[indices[index++]];
+			Vertex &v2 = buffer->tranList[indices[index++]];
+			drawTriangleSolid(v0, v1, v2);
 		}
 	}
 
@@ -730,7 +745,7 @@ namespace GPEngine3D{
 	*/
 	void SoftwareRenderer::_cameraToProjectionTransform(PolyObject *buffer, uint_32 offset, const Matrix4 &projMat, uint_32 count)
 	{
-		for(int index = offset; index < offset + count; ++index)
+		for(int index = 0; index < count; ++index)
 		{
 			buffer->triangleArray[index].tranList[0].p = projMat * buffer->triangleArray[index].localList[0].p;
 			buffer->triangleArray[index].tranList[1].p = projMat * buffer->triangleArray[index].localList[1].p;

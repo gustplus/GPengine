@@ -23,7 +23,7 @@ namespace GPEngine3D {
     {
         Matrix4 rotate_m;
         rotate_m.setRotation(angle, axis);
-        _transform = rotate_m * _transform;
+        //_transform = rotate_m * _transform;
     }
     /*
     void Transform::rotate(const glm::mat3 &)
@@ -45,7 +45,7 @@ namespace GPEngine3D {
     {
         Matrix4 translate_m;
         translate_m.setTranslation(move);
-        _transform = translate_m * _transform;
+        //_transform = translate_m * _transform;
     }
     
     void Transform::setTranslate(const vec3f &)
@@ -62,7 +62,7 @@ namespace GPEngine3D {
     {
         Matrix4 scale_m;
         scale_m.setScale(scale);
-        _transform = scale_m * _transform;
+        //_transform = scale_m * _transform;
     }
     
     float *Transform::toArray()
@@ -72,7 +72,8 @@ namespace GPEngine3D {
     
     Transform operator *(const Transform &t1, const Transform &t2)
     {
-        Matrix4 m = t1._transform * t2._transform;
+        //Matrix4 m = t1._transform * t2._transform;
+		Matrix4 m;
         return Transform(m);
     }
     

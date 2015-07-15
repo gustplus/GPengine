@@ -11,7 +11,7 @@
 
 #include "gp.h"
 #include "glfunc.h"
-
+#include "types.h"
 /*
  *you can use VertexBuffer to store vertex data, include vertex position, colors, and user defined datas
  *
@@ -30,16 +30,16 @@ namespace GPEngine3D
         
         int getElementNum();
         
-        void changeElementDataAt(uint index, const unsigned short *data);
+        void changeElementDataAt(uint_32 index, const unsigned short *data);
         
-        void changeElementDataWithRange(uint startIndex, uint length, const unsigned short *data);
+        void changeElementDataWithRange(uint_32 startIndex, uint_32 length, const unsigned short *data);
         
         bool genElementBuffer(const unsigned short *indice);
         
         void bind();
         
     private:
-        uint _num;
+        uint_32 _num;
         GLuint _VBO;
 
         bool _isDirty;

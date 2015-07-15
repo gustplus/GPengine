@@ -28,7 +28,7 @@ namespace GPEngine3D{
     
     OpenGLStateManager::~OpenGLStateManager()
     {
-        GP_DELETE_ARRAY _clearColor;
+        GP_DELETE_ARRAY(_clearColor);
     }
     
     void OpenGLStateManager::enableBlend(bool useBlend)
@@ -56,7 +56,7 @@ namespace GPEngine3D{
         glBlendFunc(_blendSrcFactor, _blendDstFactor);
     }
     
-    void OpenGLStateManager::setLineWidth(uint width)
+    void OpenGLStateManager::setLineWidth(uint_32 width)
     {
         if (_lineWidth != width)
         {
@@ -191,6 +191,6 @@ namespace GPEngine3D{
     
     void OpenGLStateManager::shutdown()
     {
-        GP_DELETE s_instance;
+        GP_DELETE(s_instance);
     }
 }
