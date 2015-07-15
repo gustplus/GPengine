@@ -76,9 +76,9 @@ namespace GPEngine3D {
         return Transform(m);
     }
     
-    vec2f Transform::transformVector2(const vec2f &vec)
+    vec4f Transform::transformVector3(vec3f &vec)
     {
-        vec2f v =  _transform * vec;
+        vec4f v =  _transform * vec4f(vec, 1.0f);
         return v;
     }
 }

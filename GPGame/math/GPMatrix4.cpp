@@ -88,29 +88,29 @@ namespace GPEngine3D{
     
     void Matrix4::frustum(float left, float right, float bottom, float top, float zNear, float zFar)
     {
-       float oneOfWidth = 1.0f / (right - left);
-       float oneOfHeight = 1.0f / (top - bottom);
-       float oneOfNearFar = 1.0f / (zFar - zNear);
+       float invWidth = 1.0f / (right - left);
+       float invHeight = 1.0f / (top - bottom);
+       float invNearFar = 1.0f / (zFar - zNear);
        float twoNear = 2 * zNear;
 
-       m[0] = twoNear * oneOfWidth;
+       m[0] = twoNear * invWidth;
        m[1] = 0;
        m[2] = 0;
        m[3] = 0;
 
        m[4] = 0;
-       m[5] = twoNear * oneOfHeight;
+       m[5] = twoNear * invHeight;
        m[6] = 0;
        m[7] = 0;
 
-       m[8] = (right + left) * oneOfWidth; 
-       m[9] = (top + bottom) * oneOfHeight; 
-       m[10] = -(zFar + zNear) * oneOfNearFar;
+       m[8] = (right + left) * invWidth; 
+       m[9] = (top + bottom) * invHeight; 
+       m[10] = -(zFar + zNear) * invNearFar;
        m[11] = -1;
 
        m[12] = 0;
        m[13] = 0;
-       m[14] = -(2 * zFar * zNear) * oneOfNearFar;
+       m[14] = -(2 * zFar * zNear) * invNearFar;
        m[15] = 0;
     }
     
@@ -133,6 +133,16 @@ namespace GPEngine3D{
     {
         
     }
+
+	vec4f Matrix4::operator *(const vec4f &vec) const
+    {
+		vec4f ret;
+		ret.x = m[0] * vec.x + m[4] * vec.y + m[8] * vec.z + m[12] * vec.w;
+		ret.y = m[1] * vec.x + m[5] * vec.y + m[9] * vec.z + m[13] * vec.w;
+		ret.z = m[2] * vec.x + m[6] * vec.y + m[10] * vec.z + m[14] * vec.w;
+		ret.w = m[3] * vec.x + m[7] * vec.y + m[11] * vec.z + m[15] * vec.w;
+        return ret;
+    }
     
     
     //friend methods
@@ -144,18 +154,6 @@ namespace GPEngine3D{
     Matrix4 operator*(const Matrix4 &mat0, const Matrix4 &mat1)
     {
         Matrix4 ret;
-        return ret;
-    }
-    
-    vec3f operator *(const Matrix4 &mat, const vec3f &vec)
-    {
-        vec3f ret(1, 1, 1);
-        return ret;
-    }
-    
-    vec2f operator *(const Matrix4 &mat, const vec2f &vec)
-    {
-        vec2f ret(1, 1);
         return ret;
     }
 }

@@ -27,6 +27,7 @@ namespace GPEngine3D{
 		virtual bool remove(const T&);
 		virtual int find(const T&);
 		virtual T& operator[](int index);
+		virtual const T &operator[](int index) const;
 
 		virtual void pushback(const T& data);
 		virtual void pushfront(const T& data);
@@ -213,7 +214,18 @@ namespace GPEngine3D{
     template<class T>
     T& ArrayList<T>:: operator[](int index)
     {
-        return array[index];
+		return const_cast<T>(static_cast<const ArrayList>(*this)[index]);
+    }
+
+	template<class T>
+    const T& ArrayList<T>:: operator[](int index) const
+    {
+        if(index > i_size){
+			size_t newSize = i_size;
+			while ((newSize += i_increaseSize) < index ){}
+			resize(newSize);
+		}
+		return array[index];
     }
     
     template<class T>
@@ -228,13 +240,13 @@ namespace GPEngine3D{
     template<class T>
     void ArrayList<T>::pushback(const T& data)
     {
-        Insert(data, i_size);
+        insert(data, i_size);
     }
     
     template<class T>
     void ArrayList<T>::pushfront(const T& data)
     {
-        Insert(data, 0);
+        insert(data, 0);
     }
     
     template<class T>

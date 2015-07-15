@@ -34,7 +34,7 @@ namespace GPEngine3D{
         
         float *toArray();
         
-        vec2f transformVector2(const vec2f &vec);
+        vec4f transformVector3(vec3f &vec);
 
 	private:
 //		glm::mat3 rotate;

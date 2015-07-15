@@ -131,6 +131,7 @@
     <ClInclude Include="paltforms\win32\targetver.h" />
     <ClInclude Include="renderer\GPGLRenderer.h" />
     <ClInclude Include="renderer\GPRenderer.h" />
+    <ClInclude Include="renderer\GPRenderStructures.h" />
     <ClInclude Include="renderer\RenderDefs.h" />
     <ClInclude Include="renderer\Software\GPSoftwareRenderer.h" />
     <ClInclude Include="Resource.h" />
@@ -170,6 +171,7 @@
     <ClCompile Include="paltforms\win32\stdafx.cpp" />
     <ClCompile Include="renderer\GPGLRenderer.cpp" />
     <ClCompile Include="renderer\GPRenderer.cpp" />
+    <ClCompile Include="renderer\GPRenderStructures.cpp" />
     <ClCompile Include="renderer\Software\GPSoftwareRenderer.cpp" />
     <ClCompile Include="system\GPOpenGLStateManager.cpp" />
     <ClCompile Include="TestScreen.cpp" />

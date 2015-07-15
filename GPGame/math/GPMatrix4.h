@@ -12,17 +12,17 @@ namespace GPEngine3D{
     };
 
 	class Matrix4
-	{
-        friend Matrix4 &operator*=(Matrix4 &mat0, const Matrix4 &mat1);
-        friend Matrix4 operator*(const Matrix4 &mat0, const Matrix4 &mat1);
-        friend vec3f operator *(const Matrix4 &mat, const vec3f &vec);
-        friend vec2f operator *(const Matrix4 &mat, const vec2f &vec);
-        
+	{   
 	public:
 		Matrix4(void);
         Matrix4(const Matrix4 &);
 		~Matrix4(void);
         
+		friend Matrix4 &operator*=(Matrix4 &mat0, const Matrix4 &mat1);
+        friend Matrix4 operator *(const Matrix4 &mat0, const Matrix4 &mat1);
+
+        vec4f operator *(const vec4f &vec) const;
+
         void indetify();
         
 		void setRotation(float angle, const Vector3f &axis);
@@ -43,7 +43,7 @@ namespace GPEngine3D{
         
         void inverse();
         
-    private:
+    //private:
         /* storage
         0  4  8  12
         1  5  9  13

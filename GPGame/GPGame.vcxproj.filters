@@ -225,6 +225,9 @@
     <ClInclude Include="paltforms\win32\GPApplication_Win32.h">
       <Filter>platforms\win32</Filter>
     </ClInclude>
+    <ClInclude Include="renderer\GPRenderStructures.h">
+      <Filter>soft_renderer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TestScreen.cpp">
@@ -328,6 +331,9 @@
     </ClCompile>
     <ClCompile Include="paltforms\win32\GPApplication_Win32.cpp">
       <Filter>platforms\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="renderer\GPRenderStructures.cpp">
+      <Filter>soft_renderer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

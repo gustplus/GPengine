@@ -3,13 +3,15 @@
 #include "gp.h"
 
 namespace GPEngine3D {
-    Renderer::Renderer(PixelFormat format, char depthBits, char stencilBits, bool doubleBuffer, int width, int height):
+    Renderer::Renderer(PixelFormat format, char depthBits, char stencilBits, bool doubleBuffer, int width, int height, int x, int y):
     pFormat(format),
     cDepthBits(depthBits),
     cStencilBits(stencilBits),
     bDoubleBuffer(doubleBuffer),
     iWidth(width),
     iHeight(height),
+	iLeftX(x),
+	iBottomY(y),
     colorBytes(3)
     {
 		if(pFormat == PixelFormat::RGB)

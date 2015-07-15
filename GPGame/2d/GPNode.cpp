@@ -123,12 +123,12 @@ namespace GPEngine3D {
             _selfTransform.rotate(_rotation, vec3f(0, 0 ,1));
             _selfTransform.translate(vec3f(_position, 0));
             _worldTransform = _selfTransform * _worldTransform;
-            _worldPosition = _worldTransform.transformVector2(_position);
+           // _worldPosition = _worldTransform.transformVector2(_position);
         }
         if (isParentChange)
         {
             _worldTransform = _selfTransform * _worldTransform;
-            _worldPosition = _worldTransform.transformVector2(_position);
+           // _worldPosition = _worldTransform.transformVector2(_position);
             
         }
         if(!_children.empty())

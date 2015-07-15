@@ -7,9 +7,9 @@
 #define US_NS_GP                             using namespace GPEngine3D
 
 #define GP_NEW                               new
-#define GP_NEW_ARRAY                         new
-#define GP_DELETE                            delete
-#define GP_DELETE_ARRAY                      delete []
+#define GP_NEW_ARRAY(typename, num)          new typename[(num)]
+#define GP_DELETE(ptr)                       delete ptr
+#define GP_DELETE_ARRAY(ptr)                 delete [] ptr
 
 #define PTR_NEW(class)                           new SmartPtr<class>
 
@@ -41,7 +41,13 @@ T *T::getInstance(){\
 
 #define GP_SAFE_DELETE(T)\
 if(T){\
-    GP_DELETE T;\
+    GP_DELETE(T);\
+    T = nullptr;\
+}
+
+#define GP_SAFE_DELETE_ARRAY(T)\
+if(T){\
+    GP_DELETE_ARRAY(T);\
     T = nullptr;\
 }
 
@@ -55,7 +61,12 @@ assert(ops)
 
 #define isInstanceOf(class, obj) (dynamic_cast<class>(obj) == nullptr)
 
-typedef unsigned char byte;
-typedef unsigned int uint;
+template<class T>
+inline void swap(T &a, T &b)
+{
+	T &tmp = a;
+	a = b;
+	b = tmp;
+}
 
 #endif

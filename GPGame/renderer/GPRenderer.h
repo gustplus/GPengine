@@ -3,7 +3,7 @@
 
 #include "gpobject.h"
 #include "GPColorRGBA.h"
-#include "RenderDefs.h"
+#include "GPRenderStructures.h"
 #include "types.h"
 //#include "GPSystem.h"
 
@@ -33,7 +33,7 @@ namespace GPEngine3D{
 		virtual void resizeViewPort(int width, int height);
 
 	protected:
-		Renderer(PixelFormat pFormat, char depthBits, char stencilBits, bool doubleBuffer, int width, int height);
+		Renderer(PixelFormat pFormat, char depthBits, char stencilBits, bool doubleBuffer, int width, int height, int x = 0, int y = 0);
 
 		PixelFormat pFormat;
 		char cDepthBits;
@@ -43,6 +43,9 @@ namespace GPEngine3D{
 
 		int iWidth;
 		int iHeight;
+
+		int iLeftX;
+		int iBottomY;
 	};
 
 }

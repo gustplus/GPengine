@@ -13,7 +13,8 @@ namespace GPEngine3D{
 		virtual bool remove(const T&) = 0;
 		virtual T removeWithIndex(int) = 0;
 		virtual int find(const T&) = 0;
-		virtual T& operator[](int index) = 0;
+		virtual T &operator[](int index) = 0;
+		virtual const T &operator[](int index) const = 0;
 		virtual int size(){return i_capacity;}
 
 	    virtual void pushback(const T& data) = 0;

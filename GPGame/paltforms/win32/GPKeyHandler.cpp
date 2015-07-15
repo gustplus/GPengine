@@ -4,7 +4,7 @@
 
 using namespace GPEngine3D;
 
-KeyHandler::KeyHandler(void):rollDir(0), lMouseButton(false), rMouseButton(false),mMouseButton(false)
+KeyHandler::KeyHandler(void):rollDir(0), lMouseButton(false), rMouseButton(false),mMouseButton(false),mouseX(0), mouseY(0)
 {
 	memset(keys, 0, 256);
 }
