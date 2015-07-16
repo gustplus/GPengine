@@ -213,6 +213,7 @@ void GLViewImp::pollEvents()
 }
 
 LRESULT CALLBACK GLViewImp::handleEvents(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam){
+	KeyHandler::getInstance()->rollDir = 0;
 	switch (message)                               
 	{
 	case WM_ACTIVATE:

@@ -1,6 +1,7 @@
 #include "gpscreen.h"
 #include "GPSoftwareRenderer.h"
 #include "GPRenderStructures.h"
+#include "GPMatrix4.h"
 
 class TestScreen :
 	public GPEngine3D::Screen
@@ -14,6 +15,8 @@ public:
 
 private:
 	GPEngine3D::SoftwareRenderer view;
+	
+	GPEngine3D::Matrix4 projMat;
 
 	GPEngine3D::RenderList cube0;
 	GPEngine3D::RenderList cube1;

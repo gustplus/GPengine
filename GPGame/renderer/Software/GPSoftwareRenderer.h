@@ -35,15 +35,15 @@ namespace GPEngine3D{
 		void clearBuffer(ATTR_FLAG flags);
 		void setClearColor(const ColorRGBA &color) override;
 
-		void drawArray(PolyObject *buffer, uint_32 offset, const Matrix4 &mat, uint_32 faceCount);
-		void drawElements(RenderList *buffer, GLushort *const indices, const Matrix4 &mat, uint_32 count);
+		void drawArray(PolyObject &buffer, uint_32 offset,  uint_32 faceCount);
+		void drawElements(RenderList &buffer, GLushort *const indices, uint_32 count);
 
 		void _clearColorBuffer();
 		void _clearDepthBuffer();
-
-		//bool _localToWorldTransForm();
-		void _cameraToProjectionTransform(PolyObject *buffer, uint_32 offset, const Matrix4 &projMat, uint_32 count);
-		void _ProjectionToScreenTransform(PolyObject *buffer, uint_32 offset, uint_32 count);
+		
+		//I decide to take these two function out of draw functions, because if the model if no change, there is no need to recalculate
+		void projectionToScreenTransform(PolyObject &buffer, uint_32 offset, uint_32 count);
+		void projectionToScreenTransform(RenderList &buffer);
 
 		void enable(ATTR_FLAG flag);
 		void disable(ATTR_FLAG flag);

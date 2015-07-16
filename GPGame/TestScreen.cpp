@@ -14,6 +14,7 @@ TestScreen::TestScreen(void):
 
 	view.enable(ATTR_FLAG::DEPTH_BUFFER);
 
+	projMat.frustum(-0.01, 0.01, -0.006, 0.006, 0.01, 100);
 	//update(0);
 }
 
@@ -25,7 +26,7 @@ TestScreen::~TestScreen(void)
 void TestScreen::update(double deltaTime){
 	static float offsetY = 0;
 	static float offsetX = 0;
-	static float offsetZ = -80;
+	static float offsetZ = -50;
 
 	int x = KeyHandler::getInstance()->mouseX;
 	int y = KeyHandler::getInstance()->mouseY;
@@ -43,30 +44,6 @@ void TestScreen::update(double deltaTime){
 	Color3b colorG = {0,255,0};
 	Color3b colorB = {0,0,255};
 	Color3b colorW = {255,255,255};
-	/*
-	int offsetX = 0;
-	int offsetY = 0; 
-	for(int i = 0; i < 100; ++i){
-		for(int j = 0; j < 100; ++j){
-			view.drawTriangleSolid(0 + offsetX, 0 + offsetY, 10 + offsetX, 0 + offsetY, 0 + offsetX, 10 + offsetY, colorW);
-			view.drawLine(0 + offsetX, 0 + offsetY, 10 + offsetX, 0 + offsetY, colorR);
-			view.drawLine(10 + offsetX, 0 + offsetY, 0 + offsetX, 10 + offsetY, colorG);
-			view.drawLine(0 + offsetX, 0 + offsetY, 0 + offsetX, 10 + offsetY, colorB);
-			offsetY = 10 * j;
-		}
-		offsetX = 10 * i;
-	}
-	
-	//view.drawTriangleSolid(0, 0, 0, 480, 800, 480, colorW);
-	//view.drawTriangleSolid(0, 0, 800, 0, 800, 480, colorB);
-		
-	view.drawTriangleSolid(200, 100, 100, 100, 100, 200, colorR);
-	view.drawTriangleSolid(200, 0, 300, 0, 400, 100, colorG);
-	view.drawTriangleSolid(200, 200, 300, 200, 300, 300, colorB);
-	*/
-	
-	Matrix4 mat;
-	mat.frustum(-0.01, 0.01, -0.006, 0.006, 0.01, 100);
 	
 	float halfX = 5;
 	float halfY = 5;
@@ -136,12 +113,21 @@ void TestScreen::update(double deltaTime){
 	cube3.vertexAttribPosPointer(false, 0, vertices3, 8);
 	cube3.vertexAttribColorPointer(false, 0, colors, 8);
 	
+	transformRenderList(cube0, projMat);
+	transformRenderList(cube1, projMat);
+	transformRenderList(cube2, projMat);
+	transformRenderList(cube3, projMat);
 
-	view.drawElements(&cube0, indices , mat, 36);
-	view.drawElements(&cube1, indices , mat, 36);
-	view.drawElements(&cube2, indices , mat, 36);
-	view.drawElements(&cube3, indices , mat, 36);
-	
+	view.projectionToScreenTransform(cube0);
+	view.projectionToScreenTransform(cube1);
+	view.projectionToScreenTransform(cube2);
+	view.projectionToScreenTransform(cube3);
+
+	view.drawElements(cube0, indices , 36);
+	view.drawElements(cube1, indices , 36);
+	view.drawElements(cube2, indices , 36);
+	view.drawElements(cube3, indices , 36);
+
 	view.swapBuffer();
 	offsetY = -48 + y * 0.2;
 	offsetX = -80 + x * 0.2;

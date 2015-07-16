@@ -705,51 +705,25 @@ namespace GPEngine3D{
 		}
 	}
 
-	void SoftwareRenderer::drawArray(PolyObject *buffer, uint_32 offset, const Matrix4 &mat, uint_32 faceCount)
+	void SoftwareRenderer::drawArray(PolyObject &buffer, uint_32 offset, uint_32 faceCount)
 	{
-		_cameraToProjectionTransform(buffer, offset, mat, faceCount);
-		_ProjectionToScreenTransform(buffer, offset, faceCount);
+		//_cameraToProjectionTransform(buffer, offset, mat, faceCount);
+		//_ProjectionToScreenTransform(buffer, offset, faceCount);
 
 		for(int index = offset; index < offset + faceCount; ++index)
 		{
-			drawTriangleSolid(buffer->triangleArray[index]);
+			drawTriangleSolid(buffer.triangleArray[index]);
 		}
 	}
 	
-	void SoftwareRenderer::drawElements(RenderList *buffer, GLushort *const indices, const Matrix4 &mat, uint_32 count)
+	void SoftwareRenderer::drawElements(RenderList &buffer, GLushort *const indices, uint_32 count)
 	{
-		uint_32 size = buffer->size();
-		for(int idx = 0; idx < size; ++idx)
-		{
-			buffer->tranList[idx].p = mat * buffer->localList[idx].p;
-			vec4f &v = buffer->tranList[idx].p;
-			float inv_w = 1.0f / v.w;
-			v.x = (v.x * inv_w + 1.0f) * iWidth * 0.5f;
-			v.y = (v.y * inv_w + 1.0f) * iHeight * 0.5f;
-			v.z = v.w;
-			v.w = -inv_w;
-		}
-
 		for(int index = 0; index < count; )
 		{
-			Vertex &v0 = buffer->tranList[indices[index++]];
-			Vertex &v1 = buffer->tranList[indices[index++]];
-			Vertex &v2 = buffer->tranList[indices[index++]];
+			Vertex &v0 = buffer.tranList[indices[index++]];
+			Vertex &v1 = buffer.tranList[indices[index++]];
+			Vertex &v2 = buffer.tranList[indices[index++]];
 			drawTriangleSolid(v0, v1, v2);
-		}
-	}
-
-	/*
-	after this transform, the x, y, z param of each vertex will be in range[-1, 1],
-	and w param will be -z
-	*/
-	void SoftwareRenderer::_cameraToProjectionTransform(PolyObject *buffer, uint_32 offset, const Matrix4 &projMat, uint_32 count)
-	{
-		for(int index = 0; index < count; ++index)
-		{
-			buffer->triangleArray[index].tranList[0].p = projMat * buffer->triangleArray[index].localList[0].p;
-			buffer->triangleArray[index].tranList[1].p = projMat * buffer->triangleArray[index].localList[1].p;
-			buffer->triangleArray[index].tranList[2].p = projMat * buffer->triangleArray[index].localList[2].p;
 		}
 	}
 	/*
@@ -758,28 +732,42 @@ namespace GPEngine3D{
 	the z param will be -z,(because the original z is no use, so we use it to record the z in world coordinate)
 	and w param will be -1 / z
 	*/
-	void SoftwareRenderer::_ProjectionToScreenTransform(PolyObject *buffer, uint_32 offset, uint_32 count)
+	void SoftwareRenderer::projectionToScreenTransform(PolyObject &buffer, uint_32 offset, uint_32 count)
 	{
 		for (int index = offset; index < offset + count; ++index)
 		{
 			//actually inv_w is -1 / z, because z < 0, inv_w > 0
-			float inv_w = 1.0f / buffer->triangleArray[index].tranList[0].p.w;
-			buffer->triangleArray[index].tranList[0].p.x = (buffer->triangleArray[index].tranList[0].p.x * inv_w + 1.0f) * iWidth * 0.5f;
-			buffer->triangleArray[index].tranList[0].p.y = (buffer->triangleArray[index].tranList[0].p.y * inv_w + 1.0f) * iHeight * 0.5f;
-			buffer->triangleArray[index].tranList[0].p.z = buffer->triangleArray[index].tranList[0].p.w;
-			buffer->triangleArray[index].tranList[0].p.w = -inv_w;
+			float inv_w = 1.0f / buffer.triangleArray[index].tranList[0].p.w;
+			buffer.triangleArray[index].tranList[0].p.x = (buffer.triangleArray[index].tranList[0].p.x * inv_w + 1.0f) * iWidth * 0.5f;
+			buffer.triangleArray[index].tranList[0].p.y = (buffer.triangleArray[index].tranList[0].p.y * inv_w + 1.0f) * iHeight * 0.5f;
+			buffer.triangleArray[index].tranList[0].p.z = buffer.triangleArray[index].tranList[0].p.w;
+			buffer.triangleArray[index].tranList[0].p.w = -inv_w;
 
-			inv_w = 1.0f / buffer->triangleArray[index].tranList[1].p.w;
-			buffer->triangleArray[index].tranList[1].p.x = (buffer->triangleArray[index].tranList[1].p.x * inv_w + 1.0f) * iWidth * 0.5f;
-			buffer->triangleArray[index].tranList[1].p.y = (buffer->triangleArray[index].tranList[1].p.y * inv_w + 1.0f) * iHeight * 0.5f;
-			buffer->triangleArray[index].tranList[1].p.z = buffer->triangleArray[index].tranList[1].p.w;
-			buffer->triangleArray[index].tranList[1].p.w = -inv_w;
+			inv_w = 1.0f / buffer.triangleArray[index].tranList[1].p.w;
+			buffer.triangleArray[index].tranList[1].p.x = (buffer.triangleArray[index].tranList[1].p.x * inv_w + 1.0f) * iWidth * 0.5f;
+			buffer.triangleArray[index].tranList[1].p.y = (buffer.triangleArray[index].tranList[1].p.y * inv_w + 1.0f) * iHeight * 0.5f;
+			buffer.triangleArray[index].tranList[1].p.z = buffer.triangleArray[index].tranList[1].p.w;
+			buffer.triangleArray[index].tranList[1].p.w = -inv_w;
 
-			inv_w = 1.0f / buffer->triangleArray[index].tranList[2].p.w;
-			buffer->triangleArray[index].tranList[2].p.x = (buffer->triangleArray[index].tranList[2].p.x * inv_w + 1.0f) * iWidth * 0.5f;
-			buffer->triangleArray[index].tranList[2].p.y = (buffer->triangleArray[index].tranList[2].p.y * inv_w + 1.0f) * iHeight * 0.5f;
-			buffer->triangleArray[index].tranList[2].p.z = buffer->triangleArray[index].tranList[2].p.w;
-			buffer->triangleArray[index].tranList[2].p.w = -inv_w;
+			inv_w = 1.0f / buffer.triangleArray[index].tranList[2].p.w;
+			buffer.triangleArray[index].tranList[2].p.x = (buffer.triangleArray[index].tranList[2].p.x * inv_w + 1.0f) * iWidth * 0.5f;
+			buffer.triangleArray[index].tranList[2].p.y = (buffer.triangleArray[index].tranList[2].p.y * inv_w + 1.0f) * iHeight * 0.5f;
+			buffer.triangleArray[index].tranList[2].p.z = buffer.triangleArray[index].tranList[2].p.w;
+			buffer.triangleArray[index].tranList[2].p.w = -inv_w;
+		}
+	}
+
+	void SoftwareRenderer::projectionToScreenTransform(RenderList &buffer)
+	{
+		uint_32 size = buffer.size();
+		for(int idx = 0; idx < size; ++idx)
+		{
+			vec4f &v = buffer.tranList[idx].p;
+			float inv_w = 1.0f / v.w;
+			v.x = (v.x * inv_w + 1.0f) * iWidth * 0.5f;
+			v.y = (v.y * inv_w + 1.0f) * iHeight * 0.5f;
+			v.z = v.w;
+			v.w = -inv_w;
 		}
 	}
 
