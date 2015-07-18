@@ -13,14 +13,17 @@
 using std::string;
 
 namespace GPEngine3D {
-    Image::Image()
+    Image::Image():
+    iWidth(0),
+    iHeight(0),
+    bImageData(nullptr)
     {
         
     }
     
     Image::~Image()
     {
-        GP_DELETE(imageData);
+        GP_SAFE_DELETE_ARRAY(bImageData);
     }
     
     void Image::initWithFile(const string &fileName)
@@ -34,13 +37,13 @@ namespace GPEngine3D {
     
     void Image::initWithBytes(byte *bytes, int width, int height)
     {
-        this->width = width;
-        this->height = height;
-        this->imageData = bytes;
+        this->iWidth = width;
+        this->iHeight = height;
+        this->bImageData = bytes;
     }
     
-    byte *Image::getBytes() const
+    byte *const Image::getBytes() const
     {
-        return imageData;
+        return bImageData;
     }
 }

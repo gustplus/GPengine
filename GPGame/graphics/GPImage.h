@@ -27,13 +27,13 @@ namespace GPEngine3D{
         
         void initWithBytes(byte *bytes, int width, int height);
         
-        byte *getBytes() const;
+        byte *const getBytes() const;
         
     private:
-        byte* imageData;
+        byte *bImageData;
         
-        int width;
-        int height;
+        int iWidth;
+        int iHeight;
         
         ImageFormat format;
         

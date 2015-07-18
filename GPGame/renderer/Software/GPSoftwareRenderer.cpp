@@ -142,14 +142,14 @@ namespace GPEngine3D{
 
 		int xArr[3] = {(int)(v0.p.x + 0.5f), (int)(v1.p.x + 0.5f), (int)(v2.p.x + 0.5f)};
 		int yArr[3] = {(int)(v0.p.y + 0.5f), (int)(v1.p.y + 0.5f), (int)(v2.p.y + 0.5f)};
-		float invZArr[3] = {v0.p.w, v1.p.w, v2.p.w};
-		float uArr[3] = {v0.uv.x * v0.p.w, v1.uv.x * v1.p.w, v2.uv.x * v2.p.w};
-		float vArr[3] = {v0.uv.y * v0.p.w, v1.uv.y * v1.p.w, v2.uv.y * v2.p.w};
+		float zArr[3] = {v0.p.z, v1.p.z, v2.p.z};
+		float uArr[3] = {v0.uv.x * zArr[0], v1.uv.x * zArr[1], v2.uv.x * zArr[2]};
+		float vArr[3] = {v0.uv.y * zArr[0], v1.uv.y * zArr[1], v2.uv.y * zArr[2]};
 
-		float rArr[3] = {v0.color.r * v0.p.w, v1.color.r * v1.p.w, v2.color.r * v2.p.w};
-		float gArr[3] = {v0.color.g * v0.p.w, v1.color.g * v1.p.w, v2.color.g * v2.p.w};
-		float bArr[3] = {v0.color.b * v0.p.w, v1.color.b * v1.p.w, v2.color.b * v2.p.w};
-		float aArr[3] = {v0.color.a * v0.p.w, v1.color.a * v1.p.w, v2.color.a * v2.p.w};
+		float rArr[3] = {v0.color.r * zArr[0], v1.color.r * zArr[1], v2.color.r * zArr[2]};
+		float gArr[3] = {v0.color.g * zArr[0], v1.color.g * zArr[1], v2.color.g * zArr[2]};
+		float bArr[3] = {v0.color.b * zArr[0], v1.color.b * zArr[1], v2.color.b * zArr[2]};
+		float aArr[3] = {v0.color.a * zArr[0], v1.color.a * zArr[1], v2.color.a * zArr[2]};
 
 		if((xArr[0] == xArr[1] && xArr[1] == xArr[2]) || (yArr[0] == yArr[1] && yArr[1] == yArr[2]))
 		{
@@ -217,9 +217,9 @@ namespace GPEngine3D{
 				float inv_dyr = 1.0f / (yArr[idxr] - yArr[idx0]);
 
 				//use for interpolation
-				float dzl = (invZArr[idxl] - invZArr[idx0]) * inv_dyl;
+				float dzl = (zArr[idxl] - zArr[idx0]) * inv_dyl;
 				float dxl = (float)(xArr[idxl] - xArr[idx0]) * inv_dyl;
-				float dzr = (invZArr[idxr] - invZArr[idx0]) * inv_dyr;
+				float dzr = (zArr[idxr] - zArr[idx0]) * inv_dyr;
 				float dxr = (float)(xArr[idxr] - xArr[idx0]) * inv_dyr;
 
 				float dul = (uArr[idxl] - uArr[idx0]) * inv_dyl;
@@ -238,8 +238,8 @@ namespace GPEngine3D{
 
 				float xl = xArr[idx0];
 				float xr = xArr[idx0];
-				float zl = invZArr[idx0];
-				float zr = invZArr[idx0];
+				float zl = zArr[idx0];
+				float zr = zArr[idx0];
 				float ul = uArr[idx0];
 				float ur = uArr[idx0];
 				float vl = vArr[idx0];
@@ -316,14 +316,14 @@ namespace GPEngine3D{
 						for (int x = i_xl; x < i_xr; ++x)
 						{	
 							if(*depthBuf > zi){
-								*colorBuf = (byte)(ri / zi);
-								*(colorBuf + 1) = (byte)(gi / zi);
-								*(colorBuf + 2) = (byte)(bi / zi);
-								colorBuf += colorBytes;
+								float inv_z = 1.0f / zi;
+								*colorBuf = (byte)(ri * inv_z);
+								*(colorBuf + 1) = (byte)(gi * inv_z);
+								*(colorBuf + 2) = (byte)(bi * inv_z);
 								*depthBuf = zi;
-								++depthBuf;
 							}
-
+							colorBuf += colorBytes;
+							++depthBuf;
 							ri += dr;
 							gi += dg;
 							bi += db;
@@ -370,8 +370,8 @@ namespace GPEngine3D{
 				float inv_dyl = 1.0f / (yArr[idx2] - yArr[idxl]);
 				float inv_dyr = 1.0f / (yArr[idx2] - yArr[idxr]);
 				//use for interpolation
-				float dzl = (invZArr[idxl] - invZArr[idx2]) * inv_dyl;
-				float dzr = (invZArr[idxr] - invZArr[idx2]) * inv_dyr;
+				float dzl = (zArr[idxl] - zArr[idx2]) * inv_dyl;
+				float dzr = (zArr[idxr] - zArr[idx2]) * inv_dyr;
 				float dxl = (float)(xArr[idxl] - xArr[idx2]) * inv_dyl;
 				float dxr = (float)(xArr[idxr] - xArr[idx2]) * inv_dyr;
 
@@ -391,8 +391,8 @@ namespace GPEngine3D{
 
 				float xl = xArr[idx2];
 				float xr = xArr[idx2];
-				float zl = invZArr[idx2];
-				float zr = invZArr[idx2];
+				float zl = zArr[idx2];
+				float zr = zArr[idx2];
 				float ul = uArr[idx2];
 				float ur = uArr[idx2];
 				float vl = vArr[idx2];
@@ -469,14 +469,14 @@ namespace GPEngine3D{
 						for (int x = i_xl; x < i_xr; ++x)
 						{
 							if(*depthBuf > zi){
-								*colorBuf = (byte)(ri / zi);
-								*(colorBuf + 1) = (byte)(gi / zi);
-								*(colorBuf + 2) = (byte)(bi / zi);
-								colorBuf += colorBytes;
+								float inv_z = 1.0f / zi;
+								*colorBuf = (byte)(ri * inv_z);
+								*(colorBuf + 1) = (byte)(gi * inv_z);
+								*(colorBuf + 2) = (byte)(bi * inv_z);
 								*depthBuf = zi;
-								++depthBuf;
 							}
-							
+							colorBuf += colorBytes;
+							++depthBuf;
 							ri += dr;
 							gi += dg;
 							bi += db;
@@ -680,7 +680,12 @@ namespace GPEngine3D{
 	{
 		if(_attr & ATTR_FLAG::DEPTH_BUFFER)
 		{
-			memset(_fDepthBuffer, 0, sizeof(float) * iHeight * iWidth);
+			// memset(_fDepthBuffer, 0, sizeof(float) * iHeight * iWidth);
+			int count = iWidth * iHeight;
+			for (int i = 0; i < count; ++i)
+			{
+				_fDepthBuffer[i] = 2.0f;
+			}
 		}
 	}
 
@@ -729,7 +734,7 @@ namespace GPEngine3D{
 	/*
 	after this transform, the x param of each vertex will be in range[0, ScreenWidth - 1],
 	the y param will be in range[0, ScreenWidth - 1],
-	the z param will be -z,(because the original z is no use, so we use it to record the z in world coordinate)
+	the z param will be in range [0, 1]
 	and w param will be -1 / z
 	*/
 	void SoftwareRenderer::projectionToScreenTransform(PolyObject &buffer, uint_32 offset, uint_32 count)
@@ -740,20 +745,21 @@ namespace GPEngine3D{
 			float inv_w = 1.0f / buffer.triangleArray[index].tranList[0].p.w;
 			buffer.triangleArray[index].tranList[0].p.x = (buffer.triangleArray[index].tranList[0].p.x * inv_w + 1.0f) * iWidth * 0.5f;
 			buffer.triangleArray[index].tranList[0].p.y = (buffer.triangleArray[index].tranList[0].p.y * inv_w + 1.0f) * iHeight * 0.5f;
-			buffer.triangleArray[index].tranList[0].p.z = buffer.triangleArray[index].tranList[0].p.w;
+			buffer.triangleArray[index].tranList[0].p.z = (buffer.triangleArray[index].tranList[0].p.z * inv_w + 1.0f) * 0.5f;
 			buffer.triangleArray[index].tranList[0].p.w = -inv_w;
 
 			inv_w = 1.0f / buffer.triangleArray[index].tranList[1].p.w;
 			buffer.triangleArray[index].tranList[1].p.x = (buffer.triangleArray[index].tranList[1].p.x * inv_w + 1.0f) * iWidth * 0.5f;
 			buffer.triangleArray[index].tranList[1].p.y = (buffer.triangleArray[index].tranList[1].p.y * inv_w + 1.0f) * iHeight * 0.5f;
-			buffer.triangleArray[index].tranList[1].p.z = buffer.triangleArray[index].tranList[1].p.w;
+			buffer.triangleArray[index].tranList[1].p.z = (buffer.triangleArray[index].tranList[1].p.z * inv_w + 1.0f)* 0.5f;
 			buffer.triangleArray[index].tranList[1].p.w = -inv_w;
 
 			inv_w = 1.0f / buffer.triangleArray[index].tranList[2].p.w;
 			buffer.triangleArray[index].tranList[2].p.x = (buffer.triangleArray[index].tranList[2].p.x * inv_w + 1.0f) * iWidth * 0.5f;
 			buffer.triangleArray[index].tranList[2].p.y = (buffer.triangleArray[index].tranList[2].p.y * inv_w + 1.0f) * iHeight * 0.5f;
-			buffer.triangleArray[index].tranList[2].p.z = buffer.triangleArray[index].tranList[2].p.w;
+			buffer.triangleArray[index].tranList[2].p.z = (buffer.triangleArray[index].tranList[2].p.z * inv_w + 1.0f)* 0.5f;
 			buffer.triangleArray[index].tranList[2].p.w = -inv_w;
+
 		}
 	}
 
@@ -766,7 +772,7 @@ namespace GPEngine3D{
 			float inv_w = 1.0f / v.w;
 			v.x = (v.x * inv_w + 1.0f) * iWidth * 0.5f;
 			v.y = (v.y * inv_w + 1.0f) * iHeight * 0.5f;
-			v.z = v.w;
+			v.z = (v.z * inv_w + 1.0f) * 0.5;
 			v.w = -inv_w;
 		}
 	}
