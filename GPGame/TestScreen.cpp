@@ -16,36 +16,54 @@ TestScreen::TestScreen(void):
 	view.enable(ATTR_FLAG::DEPTH_BUFFER);
 
 	projMat.frustum(-0.01, 0.01, -0.006, 0.006, 0.01, 1000);
-	//update(0);
 
-	byte *buf = (byte *)malloc(256 * 256 * 4);
-	byte *tmpP = buf;
-	for(int row = 0; row < 256; ++row)
+	static const int s = 256;
+	byte *buf = (byte *)malloc(s * s * 3);
+	for(int row = 0; row < s; ++row)
 	{
-		for(int col = 0; col < 256; ++col)
+		byte *tmp = buf + (row * s * 3);
+		for(int col = 0; col < s; ++col)
 		{
-			byte c = ((row & 0x8) ^ (col & 0x8)) * 255;
-			*tmpP++ = (GLubyte)c;
-			*tmpP++ = (GLubyte)c;
-			*tmpP++ = (GLubyte)c;
-			*tmpP++ = (GLubyte)255;
+			byte c = (((row & 0x8) == 0) ^ ((col & 0x8) == 0)) * 255;
+			*(tmp++) = (GLubyte)c;
+			*(tmp++) = (GLubyte)c;
+			*(tmp++) = (GLubyte)c;
 		}
 	}
-	tex.initWithBytes(buf, 256, 256);
+	tex.initWithBytes((byte *)buf, s, s);
 
+	GLfloat uvs[] = {0.0f, 0.0f,
+					 0.0f, 1.0f,
+					 1.0f, 0.0f,
+					 1.0f, 1.0f,
+					 0.0f, 0.0f,
+					 0.0f, 1.0f,
+					 1.0f, 0.0f,
+					 1.0f, 1.0f};
+	cube0.vertexAttribTexCoordPointer(false, 0, uvs, 8);
+	cube0.setTexture(&tex);
+	cube1.vertexAttribTexCoordPointer(false, 0, uvs, 8);
+	cube1.setTexture(&tex);
+	cube2.vertexAttribTexCoordPointer(false, 0, uvs, 8);
+	cube2.setTexture(&tex);
+	cube3.vertexAttribTexCoordPointer(false, 0, uvs, 8);
+	cube3.setTexture(&tex);
+	
 	GLubyte colors[] = {255, 0, 0, 255,
 						0, 255, 0, 255,
 						0, 0, 255, 255,
 						255, 255, 255, 255,
-						255, 0, 0, 255,
-						0, 255, 0, 255,
 						0, 0, 255, 255,
+						0, 255, 0, 255,
+						255, 0, 0, 255,
 						255, 255, 255, 255};
 
 	cube0.vertexAttribColorPointer(false, 0, colors, 8);
 	cube1.vertexAttribColorPointer(false, 0, colors, 8);
 	cube2.vertexAttribColorPointer(false, 0, colors, 8);
 	cube3.vertexAttribColorPointer(false, 0, colors, 8);
+
+	update(0);
 }
 
 
@@ -56,13 +74,13 @@ TestScreen::~TestScreen(void)
 void TestScreen::update(double deltaTime){
 	static float offsetY = 0;
 	static float offsetX = 0;
-	static float offsetZ = -50;
+	static float offsetZ = -60;
 
 	int x = KeyHandler::getInstance()->mouseX;
 	int y = KeyHandler::getInstance()->mouseY;
 
-	offsetZ += KeyHandler::getInstance()->rollDir * deltaTime * 7;
-
+	offsetZ += KeyHandler::getInstance()->rollDir * deltaTime * 8;
+	
 	view.clearBuffer();
 	
 	Color3b colorR = {255,0,0};
@@ -70,9 +88,9 @@ void TestScreen::update(double deltaTime){
 	Color3b colorB = {0,0,255};
 	Color3b colorW = {255,255,255};
 	
-	float halfX = 5;
-	float halfY = 5;
-	float halfZ = 5;
+	float halfX = 10;
+	float halfY = 10;
+	float halfZ = 10;
 
 	GLfloat vertices[] = { -halfX + offsetX, halfY - offsetY, halfZ + offsetZ,
 						   -halfX + offsetX, -halfY - offsetY, halfZ + offsetZ,

@@ -2,7 +2,7 @@
 #include "GPSoftwareRenderer.h"
 #include "GPRenderStructures.h"
 #include "GPMatrix4.h"
-#include "GPImage.h"
+#include "GPSoftwareTexture.h"
 
 class TestScreen :
 	public GPEngine3D::Screen
@@ -24,6 +24,6 @@ private:
 	GPEngine3D::RenderList cube2;
 	GPEngine3D::RenderList cube3;
 
-	GPEngine3D::Image tex;
+	GPEngine3D::Texture2D tex;
 };
 

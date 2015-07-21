@@ -112,7 +112,7 @@ bool GLViewImp::initWithRect(Rect &winRect, const char *name)
 	}
 
 	_hWindow = CreateWindowEx(NULL, szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
-		(int)winRect.x, (int)winRect.y, (int)winRect.width, (int)winRect.height, NULL, NULL, _hInstance, 0);
+		(int)winRect.x, (int)winRect.y, (int)winRect.width, (int)winRect.height + 38, NULL, NULL, _hInstance, 0);
 	if (!_hWindow)
 	{
 		MessageBox( _hWindow, "Could not create a window", "RENDERER ERROR", MB_OK | MB_ICONSTOP );

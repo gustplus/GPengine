@@ -120,21 +120,239 @@ namespace GPEngine3D{
 		}
 	}
 
-	void SoftwareRenderer::drawLine(const Point2i &v0, const Point2i &v1, const Color3b &color)
-	{
-		drawLine(v0.x, v0.y, v1.x, v1.y, color);
-	}
-
-	void SoftwareRenderer::drawTriangleSolid(const PolyTriangle &triangle)
+	void SoftwareRenderer::drawTriangleSolidFlat(const PolyTriangle &triangle)
 	{
 		const Vertex &v0 = triangle.tranList[0];
 		const Vertex &v1 = triangle.tranList[1];
 		const Vertex &v2 = triangle.tranList[2];
 
-		drawTriangleSolid(v0, v1, v2);
+		drawTriangleSolidFlat(v0, v1, v2);
 	}
 
-	void SoftwareRenderer::drawTriangleSolid(const Vertex &v0, const Vertex & v1, const Vertex &v2)
+	void SoftwareRenderer::drawTriangleSolidFlat(const Vertex &v0, const Vertex & v1, const Vertex &v2)
+	{
+		Color4b color = v2.color;
+		int idx0 = 0;
+		int idx1 = 1;
+		int idx2 = 2;
+
+		int xArr[3] = {(int)(v0.p.x + 0.5f), (int)(v1.p.x + 0.5f), (int)(v2.p.x + 0.5f)};
+		int yArr[3] = {(int)(v0.p.y + 0.5f), (int)(v1.p.y + 0.5f), (int)(v2.p.y + 0.5f)};
+		float zArr[3] = {v0.p.w, v1.p.w, v2.p.w};
+
+		if((xArr[0] == xArr[1] && xArr[1] == xArr[2]) || (yArr[0] == yArr[1] && yArr[1] == yArr[2]))
+		{
+			return;
+		}
+		float tmp_idx = 0;
+		//sort v0, v1, v2 by y value
+		if(yArr[idx1] < yArr[idx0]) {
+			tmp_idx = idx0;
+			idx0 = idx1;
+			idx1 = tmp_idx;
+		}
+		if(yArr[idx2] < yArr[idx0]) {
+			tmp_idx = idx0;
+			idx0 = idx2;
+			idx2 = tmp_idx;
+		}
+		if(yArr[idx2] < yArr[idx1]) {
+			tmp_idx = idx1;
+			idx1 = idx2;
+			idx2 = tmp_idx;
+		}//end sort
+
+		if ( yArr[idx2] < iBottomY || yArr[idx0] > iTopY ||
+    		(xArr[idx0] < iLeftX && xArr[idx1] < iLeftX && xArr[idx2] < iLeftX) ||
+    		(xArr[idx0] > iRightX && xArr[idx1] > iRightX && xArr[idx2] > iRightX) )
+		{
+			return;
+		}
+
+		int bytesPerRow = iWidth * colorBytes;
+		//tmp interpolation values
+		float zi;
+
+		int mid_y = yArr[idx1];
+		int yb = yArr[idx0];
+		int yt = yArr[idx2];
+
+		int dy;
+
+		byte *colorBuf;
+		float *depthBuf;
+
+		//draw down triangle
+		if(yArr[idx0] != yArr[idx1] && mid_y >= iBottomY && yb <= iTopY) {
+			//sort v1, v2 by x value
+			int idxl = idx1;
+			int idxr = idx2;
+			int distX = xArr[idxl] - xArr[idxr];
+			if( (distX > 0) || (distX == 0 && xArr[idx0] < xArr[idx1]) )
+			{
+				tmp_idx = idxl;
+				idxl = idxr;
+				idxr = tmp_idx;
+			}//end sort
+			if( (xArr[idxl] <= iRightX || xArr[idx0] <= iRightX) && (xArr[idxr] >= iLeftX || xArr[idx0] >= iLeftX) )
+			{
+				float inv_dyl = 1.0f / (yArr[idxl] - yArr[idx0]);
+				float inv_dyr = 1.0f / (yArr[idxr] - yArr[idx0]);
+
+				//use for interpolation
+				float dzl = (zArr[idxl] - zArr[idx0]) * inv_dyl;
+				float dxl = (float)(xArr[idxl] - xArr[idx0]) * inv_dyl;
+				float dzr = (zArr[idxr] - zArr[idx0]) * inv_dyr;
+				float dxr = (float)(xArr[idxr] - xArr[idx0]) * inv_dyr;
+
+				float xl = xArr[idx0];
+				float xr = xArr[idx0];
+				float zl = zArr[idx0];
+				float zr = zArr[idx0];
+
+				dy = iBottomY - yb;
+				if(dy > 0)
+				{
+					xl += dxl * dy;
+					xr += dxr * dy;
+					zl += dzl * dy;
+					zr += dzr * dy;
+					yb = iBottomY;
+				}
+				int end_y = mid_y > iTopY ? iTopY : mid_y;
+				while(yb <= end_y)
+				{
+					int dx = xr - xl;
+					if(dx > 0){
+						zi = zl;
+
+						float inv_dx = 1.0f / dx;
+						float dz = (zr - zl) * inv_dx;
+
+						int i_xl = Math::ceil(xl);
+						dx = iLeftX - i_xl;
+						if(dx > 0)
+						{
+							zi += dx * dz;
+							i_xl = iLeftX;
+						}
+						int i_xr = Math::ceil(xr);
+						i_xr = i_xr < iRightX ? i_xr : iRightX;
+						colorBuf = _bColorBuffer + yb * bytesPerRow + i_xl * colorBytes;
+						depthBuf = _fDepthBuffer + yb * iWidth + i_xl;
+						for (int x = i_xl; x < i_xr; ++x)
+						{	
+							if(*depthBuf > zi){
+								*colorBuf = color.r;
+								*(colorBuf + 1) = color.g;
+								*(colorBuf + 2) = color.b;
+								*depthBuf = zi;
+							}
+							colorBuf += colorBytes;
+							++depthBuf;
+							zi += dz;
+						}
+					}
+					xl += dxl;
+					xr += dxr;
+					zl += dzl;
+					zr += dzr;
+					++yb;
+				}
+			}
+		}
+		//draw top triangle
+		if(yArr[idx2] != yArr[idx1] && mid_y <= iTopY && yt >= iBottomY) {
+			//sort v0, v1 by x value
+			int idxl = idx0;
+			int idxr = idx1;
+			int distX = xArr[idxl] - xArr[idxr];
+			if( (distX > 0) || (distX == 0 && xArr[idx0] < xArr[idx2]) )
+			{
+				tmp_idx = idxl;
+				idxl = idxr;
+				idxr = tmp_idx;
+			}//end sort
+			if( (xArr[idxl] <= iRightX || xArr[idxr] <= iRightX) && (xArr[idx1] >= iLeftX || xArr[idxr] >= iLeftX) )
+			{
+				float inv_dyl = 1.0f / (yArr[idx2] - yArr[idxl]);
+				float inv_dyr = 1.0f / (yArr[idx2] - yArr[idxr]);
+				//use for interpolation
+				float dzl = (zArr[idxl] - zArr[idx2]) * inv_dyl;
+				float dzr = (zArr[idxr] - zArr[idx2]) * inv_dyr;
+				float dxl = (float)(xArr[idxl] - xArr[idx2]) * inv_dyl;
+				float dxr = (float)(xArr[idxr] - xArr[idx2]) * inv_dyr;
+
+				float xl = xArr[idx2];
+				float xr = xArr[idx2];
+				float zl = zArr[idx2];
+				float zr = zArr[idx2];
+
+				dy = yt - iTopY;
+				if(dy > 0)
+				{
+					xl += dxl * dy;
+					xr += dxr * dy;
+					zl += dzl * dy;
+					zr += dzr * dy;
+					yt = iTopY;
+				}
+				int end_y = mid_y > iBottomY ? mid_y : iBottomY;
+				while (yt > end_y)
+				{
+					int dx = xr - xl;
+					if(dx > 0)
+					{
+						zi = zl;
+
+						float inv_dx = 1.0f / dx;
+						float dz = (zr - zl) * inv_dx;
+
+						int i_xl = Math::ceil(xl);
+						dx = iLeftX - i_xl;
+						if(dx > 0)
+						{
+							zi += dx * dz;
+							i_xl = iLeftX;
+						}
+						int i_xr = Math::ceil(xr);
+						i_xr = i_xr < iRightX ? i_xr : iRightX;
+						colorBuf = _bColorBuffer + yt * bytesPerRow + i_xl * colorBytes;
+						depthBuf = _fDepthBuffer + yt * iWidth + i_xl;
+						for (int x = i_xl; x < i_xr; ++x)
+						{
+							if(*depthBuf > zi){
+								float inv_z = 1.0f / zi;
+								*colorBuf = color.r;
+								*(colorBuf + 1) = color.g;
+								*(colorBuf + 2) = color.b;
+								*depthBuf = zi;
+							}
+							colorBuf += colorBytes;
+							++depthBuf;
+							zi += dz;
+						}
+					}
+					xl += dxl;
+					xr += dxr;
+					zl += dzl;
+					zr += dzr;
+					--yt;
+				}
+			}
+		}
+	}
+
+	void SoftwareRenderer::drawTriangleSolidColor(const PolyTriangle &triangle)
+	{
+		const Vertex &v0 = triangle.tranList[0];
+		const Vertex &v1 = triangle.tranList[1];
+		const Vertex &v2 = triangle.tranList[2];
+
+		drawTriangleSolidColor(v0, v1, v2);
+	}
+
+	void SoftwareRenderer::drawTriangleSolidColor(const Vertex &v0, const Vertex & v1, const Vertex &v2)
 	{
 		int idx0 = 0;
 		int idx1 = 1;
@@ -142,7 +360,7 @@ namespace GPEngine3D{
 
 		int xArr[3] = {(int)(v0.p.x + 0.5f), (int)(v1.p.x + 0.5f), (int)(v2.p.x + 0.5f)};
 		int yArr[3] = {(int)(v0.p.y + 0.5f), (int)(v1.p.y + 0.5f), (int)(v2.p.y + 0.5f)};
-		float zArr[3] = {v0.p.z, v1.p.z, v2.p.z};
+		float zArr[3] = {v0.p.w, v1.p.w, v2.p.w};
 		float uArr[3] = {v0.uv.x * zArr[0], v1.uv.x * zArr[1], v2.uv.x * zArr[2]};
 		float vArr[3] = {v0.uv.y * zArr[0], v1.uv.y * zArr[1], v2.uv.y * zArr[2]};
 
@@ -507,138 +725,1238 @@ namespace GPEngine3D{
 			}
 		}
 	}
-	
-	void SoftwareRenderer::drawTriangleSolid(int x0, int y0, int x1, int y1, int x2, int y2, const Color3b &color)
+
+	void SoftwareRenderer::drawTriangleSolidTexNearest(const PolyTriangle &triangle, const Texture2D &img)
 	{
-		if((x0 == x1 && x1 == x2) || (y0 == y1 && y1 == y2))
+		const Vertex &v0 = triangle.tranList[0];
+		const Vertex &v1 = triangle.tranList[1];
+		const Vertex &v2 = triangle.tranList[2];
+
+		drawTriangleSolidTexNearest(v0, v1, v2, img);
+	}
+	
+	void SoftwareRenderer::drawTriangleSolidTexNearest(const Vertex &v0, const Vertex & v1, const Vertex &v2, const Texture2D &tex)
+	{
+		int idx0 = 0;
+		int idx1 = 1;
+		int idx2 = 2;
+
+		int xArr[3] = {(int)(v0.p.x + 0.5f), (int)(v1.p.x + 0.5f), (int)(v2.p.x + 0.5f)};
+		int yArr[3] = {(int)(v0.p.y + 0.5f), (int)(v1.p.y + 0.5f), (int)(v2.p.y + 0.5f)};
+		float zArr[3] = {v0.p.w, v1.p.w, v2.p.w};
+
+		int width = tex.getWidth();
+		int height = tex.getHeight();
+		float uArr[3] = {v0.uv.x * zArr[0] * (width - 1), v1.uv.x * zArr[1] * (width - 1), v2.uv.x * zArr[2] * (width - 1)};
+		float vArr[3] = {v0.uv.y * zArr[0] * (height - 1), v1.uv.y * zArr[1] * (height - 1), v2.uv.y * zArr[2] * (height - 1)};
+
+		float rArr[3] = {v0.color.r * zArr[0], v1.color.r * zArr[1], v2.color.r * zArr[2]};
+		float gArr[3] = {v0.color.g * zArr[0], v1.color.g * zArr[1], v2.color.g * zArr[2]};
+		float bArr[3] = {v0.color.b * zArr[0], v1.color.b * zArr[1], v2.color.b * zArr[2]};
+		float aArr[3] = {v0.color.a * zArr[0], v1.color.a * zArr[1], v2.color.a * zArr[2]};
+
+		if((xArr[0] == xArr[1] && xArr[1] == xArr[2]) || (yArr[0] == yArr[1] && yArr[1] == yArr[2]))
 		{
 			return;
 		}
-		int tmp_x = 0;
-		int tmp_y = 0;
+		float tmp_idx = 0;
 		//sort v0, v1, v2 by y value
-		if(y1 < y0) {
-			tmp_x = x0;
-			tmp_y = y0;
-			x0 = x1;
-			y0 = y1;
-			x1 = tmp_x;
-			y1 = tmp_y;
+		if(yArr[idx1] < yArr[idx0]) {
+			tmp_idx = idx0;
+			idx0 = idx1;
+			idx1 = tmp_idx;
 		}
-		if(y2 < y0) {
-			tmp_x = x0;
-			tmp_y = y0;
-			x0 = x2;
-			y0 = y2;
-			x2 = tmp_x;
-			y2 = tmp_y;
+		if(yArr[idx2] < yArr[idx0]) {
+			tmp_idx = idx0;
+			idx0 = idx2;
+			idx2 = tmp_idx;
 		}
-		if(y2 < y1) {
-			tmp_x = x2;
-			tmp_y = y2;
-			x2 = x1;
-			y2 = y1;
-			x1 = tmp_x;
-			y1 = tmp_y;
+		if(yArr[idx2] < yArr[idx1]) {
+			tmp_idx = idx1;
+			idx1 = idx2;
+			idx2 = tmp_idx;
 		}//end sort
 
-		if ( y2 < iBottomY || y0 > iTopY ||
-    		(x0 < iLeftX && x1 < iLeftX && x2 < iLeftX) ||
-    		(x0 > iRightX && x1 > iRightX && x2 > iRightX) )
+		if ( yArr[idx2] < iBottomY || yArr[idx0] > iTopY ||
+    		(xArr[idx0] < iLeftX && xArr[idx1] < iLeftX && xArr[idx2] < iLeftX) ||
+    		(xArr[idx0] > iRightX && xArr[idx1] > iRightX && xArr[idx2] > iRightX) )
 		{
 			return;
 		}
 
-		int mid_y = y1;
-
-		byte *buf;
 		int bytesPerRow = iWidth * colorBytes;
+		//tmp interpolation values
+		float ui;
+		float vi;
+		float ri;
+		float gi;
+		float bi;
+		float ai;
+		float zi;
+
+		int mid_y = yArr[idx1];
+		int yb = yArr[idx0];
+		int yt = yArr[idx2];
+
+		int dy;
+
+		byte *colorBuf;
+		float *depthBuf;
+
+		byte *imgBuf = tex.getData();
 		//draw down triangle
-		if(y0 != y1) {
+		if(yArr[idx0] != yArr[idx1] && mid_y >= iBottomY && yb <= iTopY) {
 			//sort v1, v2 by x value
-			if(x1 > x2)
+			int idxl = idx1;
+			int idxr = idx2;
+			int distX = xArr[idxl] - xArr[idxr];
+			if( (distX > 0) || (distX == 0 && xArr[idx0] < xArr[idx1]) )
 			{
-				tmp_x = x2;
-				tmp_y = y2;
-				x2 = x1;
-				y2 = y1;
-				x1 = tmp_x;
-				y1 = tmp_y;
+				tmp_idx = idxl;
+				idxl = idxr;
+				idxr = tmp_idx;
 			}//end sort
-			if((x1 <= iRightX || x0 <= iRightX) && (x2 >= iLeftX || x0 >= iLeftX))
+			if( (xArr[idxl] <= iRightX || xArr[idx0] <= iRightX) && (xArr[idxr] >= iLeftX || xArr[idx0] >= iLeftX) )
 			{
-				float dx01 = (float)(x1 - x0) / (y1 - y0);
-				float dx02 = (float)(x2 - x0) / (y2 - y0);
-				float start_x = x0;
-				float end_x = x0;
-				int start_y = y0;
-				while(start_y <= mid_y)
+				float inv_dyl = 1.0f / (yArr[idxl] - yArr[idx0]);
+				float inv_dyr = 1.0f / (yArr[idxr] - yArr[idx0]);
+				//use for interpolation
+				float dzl = (zArr[idxl] - zArr[idx0]) * inv_dyl;
+				float dxl = (float)(xArr[idxl] - xArr[idx0]) * inv_dyl;
+				float dzr = (zArr[idxr] - zArr[idx0]) * inv_dyr;
+				float dxr = (float)(xArr[idxr] - xArr[idx0]) * inv_dyr;
+
+				float dul = (uArr[idxl] - uArr[idx0]) * inv_dyl;
+				float dvl = (vArr[idxl] - vArr[idx0]) * inv_dyl;
+				float dur = (uArr[idxr] - uArr[idx0]) * inv_dyr;
+				float dvr = (vArr[idxr] - vArr[idx0]) * inv_dyr;
+
+				float drl = (rArr[idxl] - rArr[idx0]) * inv_dyl;
+				float dgl = (gArr[idxl] - gArr[idx0]) * inv_dyl;
+				float dbl = (bArr[idxl] - bArr[idx0]) * inv_dyl;
+				float dal = (aArr[idxl] - aArr[idx0]) * inv_dyl;
+				float drr = (rArr[idxr] - rArr[idx0]) * inv_dyr;
+				float dgr = (gArr[idxr] - gArr[idx0]) * inv_dyr;
+				float dbr = (bArr[idxr] - bArr[idx0]) * inv_dyr;
+				float dar = (aArr[idxr] - aArr[idx0]) * inv_dyr;
+
+				float xl = xArr[idx0];
+				float xr = xArr[idx0];
+				float zl = zArr[idx0];
+				float zr = zArr[idx0];
+				float ul = uArr[idx0];
+				float ur = uArr[idx0];
+				float vl = vArr[idx0];
+				float vr = vArr[idx0];
+				float rl = rArr[idx0];
+				float gl = gArr[idx0];
+				float bl = bArr[idx0];
+				float al = aArr[idx0];
+				float rr = rArr[idx0];
+				float gr = gArr[idx0];
+				float br = bArr[idx0];
+				float ar = aArr[idx0];
+
+				dy = iBottomY - yb;
+				if(dy > 0)
 				{
-					start_y = start_y > iBottomY ? start_y : iBottomY;
-					int iStartX = Math::ceil(start_x);
-					iStartX = iStartX > iLeftX ? iStartX : iLeftX;
-					int iEndX = Math::ceil(end_x);
-					iEndX = iEndX < iRightX ? iEndX : iRightX;
-					buf = _bColorBuffer + start_y * bytesPerRow + iStartX * colorBytes;
-					for (int x = iStartX; x < iEndX; ++x)
-					{
-						*buf = color.r;
-						*(buf + 1) = color.g;
-						*(buf + 2) = color.b;
-						buf += colorBytes;
+					xl += dxl * dy;
+					xr += dxr * dy;
+					zl += dzl * dy;
+					zr += dzr * dy;
+					ul += dul * dy;
+					ur += dur * dy;
+					vl += dvl * dy;
+					vr += dvr * dy;
+					rl += drl * dy;
+					rr += drr * dy;
+					gl += dgl * dy;
+					gr += dgr * dy;
+					bl += dbl * dy;
+					br += dbr * dy;
+					al += dal * dy;
+					ar += dar * dy;
+					yb = iBottomY;
+				}
+				int end_y = mid_y > iTopY ? iTopY : mid_y;
+				while(yb <= end_y)
+				{
+					int dx = xr - xl;
+					if(dx > 0){
+						ui = ul;
+						vi = vl;
+						ri = rl;
+						gi = gl;
+						bi = bl;
+						ai = al;
+						zi = zl;
+
+						float inv_dx = 1.0f / dx;
+						float du = (ur - ul) * inv_dx;
+						float dv = (vr - vl) * inv_dx;
+						float dr = (rr - rl) * inv_dx;
+						float dg = (gr - gl) * inv_dx;
+						float db = (br - bl) * inv_dx;
+						float da = (ar - al) * inv_dx;
+						float dz = (zr - zl) * inv_dx;
+
+						int i_xl = Math::ceil(xl);
+						dx = iLeftX - i_xl;
+						if(dx > 0)
+						{
+							ri += dx * dr;
+							gi += dx * dg;
+							bi += dx * db;
+							ai += dx * da;
+							ui += dx * du;
+							vi += dx * dv;
+							zi += dx * dz;
+							i_xl = iLeftX;
+						}
+						int i_xr = Math::ceil(xr);
+						i_xr = i_xr < iRightX ? i_xr : iRightX;
+						colorBuf = _bColorBuffer + yb * bytesPerRow + i_xl * colorBytes;
+						depthBuf = _fDepthBuffer + yb * iWidth + i_xl;
+						for (int x = i_xl; x < i_xr; ++x)
+						{	
+							if(*depthBuf > zi){
+								float inv_z = 1.0f / zi;
+								int u = (int)(ui * inv_z + 0.5f);
+								int v = (int)(vi * inv_z + 0.5f);
+								byte *pImg = imgBuf + (v * width + u) * 3;
+								*colorBuf = *pImg;
+								*(colorBuf + 1) = *(pImg + 1);
+								*(colorBuf + 2) = *(pImg + 2);
+								*depthBuf = zi;
+							}
+							colorBuf += colorBytes;
+							++depthBuf;
+							ri += dr;
+							gi += dg;
+							bi += db;
+							ai += da;
+							ui += du;
+							vi += dv;
+							zi += dz;
+						}
 					}
-					start_x += dx01;
-					end_x += dx02;
-					++start_y;
+					xl += dxl;
+					xr += dxr;
+					zl += dzl;
+					zr += dzr;
+					ul += dul;
+					ur += dur;
+					vl += dvl;
+					vr += dvr;
+					rl += drl;
+					rr += drr;
+					gl += dgl;
+					gr += dgr;
+					bl += dbl;
+					br += dbr;
+					al += dal;
+					ar += dar;
+					++yb;
 				}
 			}
 		}
 		//draw top triangle
-		if(y2 != y1) {
+		if(yArr[idx2] != yArr[idx1] && mid_y <= iTopY && yt >= iBottomY) {
 			//sort v0, v1 by x value
-			if(x0 > x1)
+			int idxl = idx0;
+			int idxr = idx1;
+			int distX = xArr[idxl] - xArr[idxr];
+			if( (distX > 0) || (distX == 0 && xArr[idx0] < xArr[idx2]) )
 			{
-				tmp_x = x0;
-				tmp_y = y0;
-				x0 = x1;
-				y0 = y1;
-				x1 = tmp_x;
-				y1 = tmp_y;
+				tmp_idx = idxl;
+				idxl = idxr;
+				idxr = tmp_idx;
 			}//end sort
-			if((x0 <= iRightX || x2 <= iRightX) && (x1 >= iLeftX || x2 >= iLeftX))
+			if( (xArr[idxl] <= iRightX || xArr[idxr] <= iRightX) && (xArr[idx1] >= iLeftX || xArr[idxr] >= iLeftX) )
 			{
-				float dx02 = (float)(x2 - x0) / (y2 - y0);
-				float dx12 = (float)(x2 - x1) / (y2 - y1);
-				int start_y = y2;
-				start_y = start_y < iTopY ? start_y : iTopY;
-				
-				float start_x = x2;
-				float end_x = x2;
-				while (start_y > mid_y)
+				float inv_dyl = 1.0f / (yArr[idx2] - yArr[idxl]);
+				float inv_dyr = 1.0f / (yArr[idx2] - yArr[idxr]);
+				//use for interpolation
+				float dzl = (zArr[idxl] - zArr[idx2]) * inv_dyl;
+				float dzr = (zArr[idxr] - zArr[idx2]) * inv_dyr;
+				float dxl = (float)(xArr[idxl] - xArr[idx2]) * inv_dyl;
+				float dxr = (float)(xArr[idxr] - xArr[idx2]) * inv_dyr;
+
+				float dul = (uArr[idxl] - uArr[idx2]) * inv_dyl;
+				float dvl = (vArr[idxl] - vArr[idx2]) * inv_dyl;
+				float dur = (uArr[idxr] - uArr[idx2]) * inv_dyr;
+				float dvr = (vArr[idxr] - vArr[idx2]) * inv_dyr;
+
+				float drl = (rArr[idxl] - rArr[idx2]) * inv_dyl;
+				float dgl = (gArr[idxl] - gArr[idx2]) * inv_dyl;
+				float dbl = (bArr[idxl] - bArr[idx2]) * inv_dyl;
+				float dal = (aArr[idxl] - aArr[idx2]) * inv_dyl;
+				float drr = (rArr[idxr] - rArr[idx2]) * inv_dyr;
+				float dgr = (gArr[idxr] - gArr[idx2]) * inv_dyr;
+				float dbr = (bArr[idxr] - bArr[idx2]) * inv_dyr;
+				float dar = (aArr[idxr] - aArr[idx2]) * inv_dyr;
+
+				float xl = xArr[idx2];
+				float xr = xArr[idx2];
+				float zl = zArr[idx2];
+				float zr = zArr[idx2];
+				float ul = uArr[idx2];
+				float ur = uArr[idx2];
+				float vl = vArr[idx2];
+				float vr = vArr[idx2];
+				float rl = rArr[idx2];
+				float gl = gArr[idx2];
+				float bl = bArr[idx2];
+				float al = aArr[idx2];
+				float rr = rArr[idx2];
+				float gr = gArr[idx2];
+				float br = bArr[idx2];
+				float ar = aArr[idx2];
+
+				dy = yt - iTopY;
+				if(dy > 0)
 				{
-					int iStartX = Math::ceil(start_x);
-					iStartX = iStartX > iLeftX ? iStartX : iLeftX;
-					int iEndX = Math::ceil(end_x);
-					iEndX = iEndX < iRightX ? iEndX : iRightX;
-					buf = _bColorBuffer + start_y * bytesPerRow + iStartX * colorBytes;
-					for (int x = iStartX; x < iEndX; ++x)
-					{
-						*buf = color.r;
-						*(buf + 1) = color.g;
-						*(buf + 2) = color.b;
-						buf += colorBytes;
+					xl += dxl * dy;
+					xr += dxr * dy;
+					zl += dzl * dy;
+					zr += dzr * dy;
+					ul += dul * dy;
+					ur += dur * dy;
+					vl += dvl * dy;
+					vr += dvr * dy;
+					rl += drl * dy;
+					rr += drr * dy;
+					gl += dgl * dy;
+					gr += dgr * dy;
+					bl += dbl * dy;
+					br += dbr * dy;
+					al += dal * dy;
+					ar += dar * dy;
+					yt = iTopY;
+				}
+				int end_y = mid_y > iBottomY ? mid_y : iBottomY;
+				while (yt > end_y)
+				{
+					int dx = xr - xl;
+					if(dx > 0){
+						ui = ul;
+						vi = vl;
+						ri = rl;
+						gi = gl;
+						bi = bl;
+						ai = al;
+						zi = zl;
+
+						float inv_dx = 1.0f / dx;
+						float du = (ur - ul) * inv_dx;
+						float dv = (vr - vl) * inv_dx;
+						float dr = (rr - rl) * inv_dx;
+						float dg = (gr - gl) * inv_dx;
+						float db = (br - bl) * inv_dx;
+						float da = (ar - al) * inv_dx;
+						float dz = (zr - zl) * inv_dx;
+
+						int i_xl = Math::ceil(xl);
+						dx = iLeftX - i_xl;
+						if(dx > 0)
+						{
+							ri += dx * dr;
+							gi += dx * dg;
+							bi += dx * db;
+							ai += dx * da;
+							ui += dx * du;
+							vi += dx * dv;
+							zi += dx * dz;
+							i_xl = iLeftX;
+						}
+						int i_xr = Math::ceil(xr);
+						i_xr = i_xr < iRightX ? i_xr : iRightX;
+						colorBuf = _bColorBuffer + yt * bytesPerRow + i_xl * colorBytes;
+						depthBuf = _fDepthBuffer + yt * iWidth + i_xl;
+						for (int x = i_xl; x < i_xr; ++x)
+						{
+							if(*depthBuf > zi){
+								float inv_z = 1.0f / zi;
+								int u = (int)(ui * inv_z + 0.5f);
+								int v = (int)(vi * inv_z + 0.5f);
+								byte *pImg = imgBuf + (v * width + u) * 3;
+								*colorBuf = *pImg;
+								*(colorBuf + 1) = *(pImg + 1);
+								*(colorBuf + 2) = *(pImg + 2);
+								*depthBuf = zi;
+							}
+							colorBuf += colorBytes;
+							++depthBuf;
+							ri += dr;
+							gi += dg;
+							bi += db;
+							ai += da;
+							ui += du;
+							vi += dv;
+							zi += dz;
+						}
 					}
-					start_x -= dx02;
-					end_x -= dx12;
-					--start_y;
-				}				
+					xl += dxl;
+					xr += dxr;
+					zl += dzl;
+					zr += dzr;
+					ul += dul;
+					ur += dur;
+					vl += dvl;
+					vr += dvr;
+					rl += drl;
+					rr += drr;
+					gl += dgl;
+					gr += dgr;
+					bl += dbl;
+					br += dbr;
+					al += dal;
+					ar += dar;
+					--yt;
+				}
 			}
 		}
 	}
-	
-	void SoftwareRenderer::drawTriangleSolid(const Point2f &v0, const Point2f &v1, const Point2f &v2, const Color3b &color)
+
+	void SoftwareRenderer::drawTriangleSolidTexLinear(const PolyTriangle &triangle, const Texture2D &img)
 	{
-		drawTriangleSolid(v0.x, v0.y, v1.x, v1.y, v2.x, v2.y, color);
+		const Vertex &v0 = triangle.tranList[0];
+		const Vertex &v1 = triangle.tranList[1];
+		const Vertex &v2 = triangle.tranList[2];
+
+		drawTriangleSolidTexLinear(v0, v1, v2, img);
+	}
+	
+	void SoftwareRenderer::drawTriangleSolidTexLinear(const Vertex &v0, const Vertex & v1, const Vertex &v2, const Texture2D &tex)
+	{
+		int idx0 = 0;
+		int idx1 = 1;
+		int idx2 = 2;
+
+		int xArr[3] = {(int)(v0.p.x + 0.5f), (int)(v1.p.x + 0.5f), (int)(v2.p.x + 0.5f)};
+		int yArr[3] = {(int)(v0.p.y + 0.5f), (int)(v1.p.y + 0.5f), (int)(v2.p.y + 0.5f)};
+		float zArr[3] = {v0.p.w, v1.p.w, v2.p.w};
+
+		int width = tex.getWidth();
+		int height = tex.getHeight();
+		float uArr[3] = {v0.uv.x * zArr[0] * (width - 1), v1.uv.x * zArr[1] * (width - 1), v2.uv.x * zArr[2] * (width - 1)};
+		float vArr[3] = {v0.uv.y * zArr[0] * (height - 1), v1.uv.y * zArr[1] * (height - 1), v2.uv.y * zArr[2] * (height - 1)};
+
+		float rArr[3] = {v0.color.r * zArr[0], v1.color.r * zArr[1], v2.color.r * zArr[2]};
+		float gArr[3] = {v0.color.g * zArr[0], v1.color.g * zArr[1], v2.color.g * zArr[2]};
+		float bArr[3] = {v0.color.b * zArr[0], v1.color.b * zArr[1], v2.color.b * zArr[2]};
+		float aArr[3] = {v0.color.a * zArr[0], v1.color.a * zArr[1], v2.color.a * zArr[2]};
+
+		if((xArr[0] == xArr[1] && xArr[1] == xArr[2]) || (yArr[0] == yArr[1] && yArr[1] == yArr[2]))
+		{
+			return;
+		}
+		float tmp_idx = 0;
+		//sort v0, v1, v2 by y value
+		if(yArr[idx1] < yArr[idx0]) {
+			tmp_idx = idx0;
+			idx0 = idx1;
+			idx1 = tmp_idx;
+		}
+		if(yArr[idx2] < yArr[idx0]) {
+			tmp_idx = idx0;
+			idx0 = idx2;
+			idx2 = tmp_idx;
+		}
+		if(yArr[idx2] < yArr[idx1]) {
+			tmp_idx = idx1;
+			idx1 = idx2;
+			idx2 = tmp_idx;
+		}//end sort
+
+		if ( yArr[idx2] < iBottomY || yArr[idx0] > iTopY ||
+    		(xArr[idx0] < iLeftX && xArr[idx1] < iLeftX && xArr[idx2] < iLeftX) ||
+    		(xArr[idx0] > iRightX && xArr[idx1] > iRightX && xArr[idx2] > iRightX) )
+		{
+			return;
+		}
+
+		int bytesPerRow = iWidth * colorBytes;
+		//tmp interpolation values
+		float ui;
+		float vi;
+		float ri;
+		float gi;
+		float bi;
+		float ai;
+		float zi;
+
+		int mid_y = yArr[idx1];
+		int yb = yArr[idx0];
+		int yt = yArr[idx2];
+
+		int dy;
+
+		byte *colorBuf;
+		float *depthBuf;
+
+		byte *imgBuf = tex.getData();
+		//draw down triangle
+		if(yArr[idx0] != yArr[idx1] && mid_y >= iBottomY && yb <= iTopY) {
+			//sort v1, v2 by x value
+			int idxl = idx1;
+			int idxr = idx2;
+			int distX = xArr[idxl] - xArr[idxr];
+			if( (distX > 0) || (distX == 0 && xArr[idx0] < xArr[idx1]) )
+			{
+				tmp_idx = idxl;
+				idxl = idxr;
+				idxr = tmp_idx;
+			}//end sort
+			if( (xArr[idxl] <= iRightX || xArr[idx0] <= iRightX) && (xArr[idxr] >= iLeftX || xArr[idx0] >= iLeftX) )
+			{
+				float inv_dyl = 1.0f / (yArr[idxl] - yArr[idx0]);
+				float inv_dyr = 1.0f / (yArr[idxr] - yArr[idx0]);
+				//use for interpolation
+				float dzl = (zArr[idxl] - zArr[idx0]) * inv_dyl;
+				float dxl = (float)(xArr[idxl] - xArr[idx0]) * inv_dyl;
+				float dzr = (zArr[idxr] - zArr[idx0]) * inv_dyr;
+				float dxr = (float)(xArr[idxr] - xArr[idx0]) * inv_dyr;
+
+				float dul = (uArr[idxl] - uArr[idx0]) * inv_dyl;
+				float dvl = (vArr[idxl] - vArr[idx0]) * inv_dyl;
+				float dur = (uArr[idxr] - uArr[idx0]) * inv_dyr;
+				float dvr = (vArr[idxr] - vArr[idx0]) * inv_dyr;
+
+				float drl = (rArr[idxl] - rArr[idx0]) * inv_dyl;
+				float dgl = (gArr[idxl] - gArr[idx0]) * inv_dyl;
+				float dbl = (bArr[idxl] - bArr[idx0]) * inv_dyl;
+				float dal = (aArr[idxl] - aArr[idx0]) * inv_dyl;
+				float drr = (rArr[idxr] - rArr[idx0]) * inv_dyr;
+				float dgr = (gArr[idxr] - gArr[idx0]) * inv_dyr;
+				float dbr = (bArr[idxr] - bArr[idx0]) * inv_dyr;
+				float dar = (aArr[idxr] - aArr[idx0]) * inv_dyr;
+
+				float xl = xArr[idx0];
+				float xr = xArr[idx0];
+				float zl = zArr[idx0];
+				float zr = zArr[idx0];
+				float ul = uArr[idx0];
+				float ur = uArr[idx0];
+				float vl = vArr[idx0];
+				float vr = vArr[idx0];
+				float rl = rArr[idx0];
+				float gl = gArr[idx0];
+				float bl = bArr[idx0];
+				float al = aArr[idx0];
+				float rr = rArr[idx0];
+				float gr = gArr[idx0];
+				float br = bArr[idx0];
+				float ar = aArr[idx0];
+
+				dy = iBottomY - yb;
+				if(dy > 0)
+				{
+					xl += dxl * dy;
+					xr += dxr * dy;
+					zl += dzl * dy;
+					zr += dzr * dy;
+					ul += dul * dy;
+					ur += dur * dy;
+					vl += dvl * dy;
+					vr += dvr * dy;
+					rl += drl * dy;
+					rr += drr * dy;
+					gl += dgl * dy;
+					gr += dgr * dy;
+					bl += dbl * dy;
+					br += dbr * dy;
+					al += dal * dy;
+					ar += dar * dy;
+					yb = iBottomY;
+				}
+				int end_y = mid_y > iTopY ? iTopY : mid_y;
+				while(yb <= end_y)
+				{
+					int dx = xr - xl;
+					if(dx > 0){
+						ui = ul;
+						vi = vl;
+						ri = rl;
+						gi = gl;
+						bi = bl;
+						ai = al;
+						zi = zl;
+
+						float inv_dx = 1.0f / dx;
+						float du = (ur - ul) * inv_dx;
+						float dv = (vr - vl) * inv_dx;
+						float dr = (rr - rl) * inv_dx;
+						float dg = (gr - gl) * inv_dx;
+						float db = (br - bl) * inv_dx;
+						float da = (ar - al) * inv_dx;
+						float dz = (zr - zl) * inv_dx;
+
+						int i_xl = Math::ceil(xl);
+						dx = iLeftX - i_xl;
+						if(dx > 0)
+						{
+							ri += dx * dr;
+							gi += dx * dg;
+							bi += dx * db;
+							ai += dx * da;
+							ui += dx * du;
+							vi += dx * dv;
+							zi += dx * dz;
+							i_xl = iLeftX;
+						}
+						int i_xr = Math::ceil(xr);
+						i_xr = i_xr < iRightX ? i_xr : iRightX;
+						colorBuf = _bColorBuffer + yb * bytesPerRow + i_xl * colorBytes;
+						depthBuf = _fDepthBuffer + yb * iWidth + i_xl;
+						for (int x = i_xl; x < i_xr; ++x)
+						{	
+							if(*depthBuf > zi){
+								float inv_z = 1.0f / zi;
+								float fu = ui * inv_z;
+								float fv = vi * inv_z;
+								int u = (int)(fu);
+								int v = (int)(fv);
+								float d0x = fu - u;
+								float d0y = fv - v;
+								float d1x = 1.0f - d0x;
+								float d1y = 1.0f - d0y;
+								byte *pImg = imgBuf + (v * width + u) * 3;
+								byte c0r = *pImg;
+								byte c0g = *(++pImg);
+								byte c0b = *(++pImg);
+								byte c1r = *(++pImg);
+								byte c1g = *(++pImg);
+								byte c1b = *(++pImg);
+								pImg += (width * 3) - 5;
+								byte c2r = *pImg;
+								byte c2g = *(++pImg);
+								byte c2b = *(++pImg);
+								byte c3r = *(++pImg);
+								byte c3g = *(++pImg);
+								byte c3b = *(++pImg);
+
+								float a = d1x * d1y;
+								float b = d0x * d1y;
+								float c = d1x * d0y;
+								float d = d0x * d0y;
+
+								*colorBuf = a * c0r + b * c1r + c * c2r + d * c3r;
+								*(colorBuf + 1) = a * c0g + b * c1g + c * c2g + d * c3g;
+								*(colorBuf + 2) = a * c0b + b * c1b + c * c2b + d * c3b;
+								*depthBuf = zi;
+							}
+							colorBuf += colorBytes;
+							++depthBuf;
+							ri += dr;
+							gi += dg;
+							bi += db;
+							ai += da;
+							ui += du;
+							vi += dv;
+							zi += dz;
+						}
+					}
+					xl += dxl;
+					xr += dxr;
+					zl += dzl;
+					zr += dzr;
+					ul += dul;
+					ur += dur;
+					vl += dvl;
+					vr += dvr;
+					rl += drl;
+					rr += drr;
+					gl += dgl;
+					gr += dgr;
+					bl += dbl;
+					br += dbr;
+					al += dal;
+					ar += dar;
+					++yb;
+				}
+			}
+		}
+		//draw top triangle
+		if(yArr[idx2] != yArr[idx1] && mid_y <= iTopY && yt >= iBottomY) {
+			//sort v0, v1 by x value
+			int idxl = idx0;
+			int idxr = idx1;
+			int distX = xArr[idxl] - xArr[idxr];
+			if( (distX > 0) || (distX == 0 && xArr[idx0] < xArr[idx2]) )
+			{
+				tmp_idx = idxl;
+				idxl = idxr;
+				idxr = tmp_idx;
+			}//end sort
+			if( (xArr[idxl] <= iRightX || xArr[idxr] <= iRightX) && (xArr[idx1] >= iLeftX || xArr[idxr] >= iLeftX) )
+			{
+				float inv_dyl = 1.0f / (yArr[idx2] - yArr[idxl]);
+				float inv_dyr = 1.0f / (yArr[idx2] - yArr[idxr]);
+				//use for interpolation
+				float dzl = (zArr[idxl] - zArr[idx2]) * inv_dyl;
+				float dzr = (zArr[idxr] - zArr[idx2]) * inv_dyr;
+				float dxl = (float)(xArr[idxl] - xArr[idx2]) * inv_dyl;
+				float dxr = (float)(xArr[idxr] - xArr[idx2]) * inv_dyr;
+
+				float dul = (uArr[idxl] - uArr[idx2]) * inv_dyl;
+				float dvl = (vArr[idxl] - vArr[idx2]) * inv_dyl;
+				float dur = (uArr[idxr] - uArr[idx2]) * inv_dyr;
+				float dvr = (vArr[idxr] - vArr[idx2]) * inv_dyr;
+
+				float drl = (rArr[idxl] - rArr[idx2]) * inv_dyl;
+				float dgl = (gArr[idxl] - gArr[idx2]) * inv_dyl;
+				float dbl = (bArr[idxl] - bArr[idx2]) * inv_dyl;
+				float dal = (aArr[idxl] - aArr[idx2]) * inv_dyl;
+				float drr = (rArr[idxr] - rArr[idx2]) * inv_dyr;
+				float dgr = (gArr[idxr] - gArr[idx2]) * inv_dyr;
+				float dbr = (bArr[idxr] - bArr[idx2]) * inv_dyr;
+				float dar = (aArr[idxr] - aArr[idx2]) * inv_dyr;
+
+				float xl = xArr[idx2];
+				float xr = xArr[idx2];
+				float zl = zArr[idx2];
+				float zr = zArr[idx2];
+				float ul = uArr[idx2];
+				float ur = uArr[idx2];
+				float vl = vArr[idx2];
+				float vr = vArr[idx2];
+				float rl = rArr[idx2];
+				float gl = gArr[idx2];
+				float bl = bArr[idx2];
+				float al = aArr[idx2];
+				float rr = rArr[idx2];
+				float gr = gArr[idx2];
+				float br = bArr[idx2];
+				float ar = aArr[idx2];
+
+				dy = yt - iTopY;
+				if(dy > 0)
+				{
+					xl += dxl * dy;
+					xr += dxr * dy;
+					zl += dzl * dy;
+					zr += dzr * dy;
+					ul += dul * dy;
+					ur += dur * dy;
+					vl += dvl * dy;
+					vr += dvr * dy;
+					rl += drl * dy;
+					rr += drr * dy;
+					gl += dgl * dy;
+					gr += dgr * dy;
+					bl += dbl * dy;
+					br += dbr * dy;
+					al += dal * dy;
+					ar += dar * dy;
+					yt = iTopY;
+				}
+				int end_y = mid_y > iBottomY ? mid_y : iBottomY;
+				while (yt > end_y)
+				{
+					int dx = xr - xl;
+					if(dx > 0){
+						ui = ul;
+						vi = vl;
+						ri = rl;
+						gi = gl;
+						bi = bl;
+						ai = al;
+						zi = zl;
+
+						float inv_dx = 1.0f / dx;
+						float du = (ur - ul) * inv_dx;
+						float dv = (vr - vl) * inv_dx;
+						float dr = (rr - rl) * inv_dx;
+						float dg = (gr - gl) * inv_dx;
+						float db = (br - bl) * inv_dx;
+						float da = (ar - al) * inv_dx;
+						float dz = (zr - zl) * inv_dx;
+
+						int i_xl = Math::ceil(xl);
+						dx = iLeftX - i_xl;
+						if(dx > 0)
+						{
+							ri += dx * dr;
+							gi += dx * dg;
+							bi += dx * db;
+							ai += dx * da;
+							ui += dx * du;
+							vi += dx * dv;
+							zi += dx * dz;
+							i_xl = iLeftX;
+						}
+						int i_xr = Math::ceil(xr);
+						i_xr = i_xr < iRightX ? i_xr : iRightX;
+						colorBuf = _bColorBuffer + yt * bytesPerRow + i_xl * colorBytes;
+						depthBuf = _fDepthBuffer + yt * iWidth + i_xl;
+						for (int x = i_xl; x < i_xr; ++x)
+						{
+							if(*depthBuf > zi){
+								float inv_z = 1.0f / zi;
+								float fu = ui * inv_z;
+								float fv = vi * inv_z;
+								int u = (int)(fu);
+								int v = (int)(fv);
+								float d0x = fu - u;
+								float d0y = fv - v;
+								float d1x = 1.0f - d0x;
+								float d1y = 1.0f - d0y;
+								byte *pImg = imgBuf + (v * width + u) * 3;
+								byte c0r = *pImg;
+								byte c0g = *(++pImg);
+								byte c0b = *(++pImg);
+								byte c1r = *(++pImg);
+								byte c1g = *(++pImg);
+								byte c1b = *(++pImg);
+								pImg += (width * 3) - 5;
+								byte c2r = *pImg;
+								byte c2g = *(++pImg);
+								byte c2b = *(++pImg);
+								byte c3r = *(++pImg);
+								byte c3g = *(++pImg);
+								byte c3b = *(++pImg);
+
+								float a = d1x * d1y;
+								float b = d0x * d1y;
+								float c = d1x * d0y;
+								float d = d0x * d0y;
+
+								*colorBuf = a * c0r + b * c1r + c * c2r + d * c3r;
+								*(colorBuf + 1) = a * c0g + b * c1g + c * c2g + d * c3g;
+								*(colorBuf + 2) = a * c0b + b * c1b + c * c2b + d * c3b;
+								*depthBuf = zi;
+							}
+							colorBuf += colorBytes;
+							++depthBuf;
+							ri += dr;
+							gi += dg;
+							bi += db;
+							ai += da;
+							ui += du;
+							vi += dv;
+							zi += dz;
+						}
+					}
+					xl += dxl;
+					xr += dxr;
+					zl += dzl;
+					zr += dzr;
+					ul += dul;
+					ur += dur;
+					vl += dvl;
+					vr += dvr;
+					rl += drl;
+					rr += drr;
+					gl += dgl;
+					gr += dgr;
+					bl += dbl;
+					br += dbr;
+					al += dal;
+					ar += dar;
+					--yt;
+				}
+			}
+		}
+	}
+
+	void SoftwareRenderer::drawTriangleSolidColorTex(const PolyTriangle &triangle, const Texture2D &img)
+	{
+		const Vertex &v0 = triangle.tranList[0];
+		const Vertex &v1 = triangle.tranList[1];
+		const Vertex &v2 = triangle.tranList[2];
+
+		drawTriangleSolidColorTex(v0, v1, v2, img);
+	}
+
+	void SoftwareRenderer::drawTriangleSolidColorTex(const Vertex &v0, const Vertex & v1, const Vertex &v2, const Texture2D &tex)
+	{
+		int idx0 = 0;
+		int idx1 = 1;
+		int idx2 = 2;
+
+		int xArr[3] = {(int)(v0.p.x + 0.5f), (int)(v1.p.x + 0.5f), (int)(v2.p.x + 0.5f)};
+		int yArr[3] = {(int)(v0.p.y + 0.5f), (int)(v1.p.y + 0.5f), (int)(v2.p.y + 0.5f)};
+		float zArr[3] = {v0.p.w, v1.p.w, v2.p.w};
+
+		int width = tex.getWidth();
+		int height = tex.getHeight();
+		float uArr[3] = {v0.uv.x * zArr[0] * (width - 1), v1.uv.x * zArr[1] * (width - 1), v2.uv.x * zArr[2] * (width - 1)};
+		float vArr[3] = {v0.uv.y * zArr[0] * (height - 1), v1.uv.y * zArr[1] * (height - 1), v2.uv.y * zArr[2] * (height - 1)};
+
+		float rArr[3] = {v0.color.r * zArr[0], v1.color.r * zArr[1], v2.color.r * zArr[2]};
+		float gArr[3] = {v0.color.g * zArr[0], v1.color.g * zArr[1], v2.color.g * zArr[2]};
+		float bArr[3] = {v0.color.b * zArr[0], v1.color.b * zArr[1], v2.color.b * zArr[2]};
+		float aArr[3] = {v0.color.a * zArr[0], v1.color.a * zArr[1], v2.color.a * zArr[2]};
+
+		if((xArr[0] == xArr[1] && xArr[1] == xArr[2]) || (yArr[0] == yArr[1] && yArr[1] == yArr[2]))
+		{
+			return;
+		}
+		float tmp_idx = 0;
+		//sort v0, v1, v2 by y value
+		if(yArr[idx1] < yArr[idx0]) {
+			tmp_idx = idx0;
+			idx0 = idx1;
+			idx1 = tmp_idx;
+		}
+		if(yArr[idx2] < yArr[idx0]) {
+			tmp_idx = idx0;
+			idx0 = idx2;
+			idx2 = tmp_idx;
+		}
+		if(yArr[idx2] < yArr[idx1]) {
+			tmp_idx = idx1;
+			idx1 = idx2;
+			idx2 = tmp_idx;
+		}//end sort
+
+		if ( yArr[idx2] < iBottomY || yArr[idx0] > iTopY ||
+    		(xArr[idx0] < iLeftX && xArr[idx1] < iLeftX && xArr[idx2] < iLeftX) ||
+    		(xArr[idx0] > iRightX && xArr[idx1] > iRightX && xArr[idx2] > iRightX) )
+		{
+			return;
+		}
+
+		int bytesPerRow = iWidth * colorBytes;
+		//tmp interpolation values
+		float ui;
+		float vi;
+		float ri;
+		float gi;
+		float bi;
+		float ai;
+		float zi;
+
+		int mid_y = yArr[idx1];
+		int yb = yArr[idx0];
+		int yt = yArr[idx2];
+
+		int dy;
+
+		byte *colorBuf;
+		float *depthBuf;
+
+		byte *imgBuf = tex.getData();
+
+		//draw down triangle
+		if(yArr[idx0] != yArr[idx1] && mid_y >= iBottomY && yb <= iTopY) {
+			//sort v1, v2 by x value
+			int idxl = idx1;
+			int idxr = idx2;
+			int distX = xArr[idxl] - xArr[idxr];
+			if( (distX > 0) || (distX == 0 && xArr[idx0] < xArr[idx1]) )
+			{
+				tmp_idx = idxl;
+				idxl = idxr;
+				idxr = tmp_idx;
+			}//end sort
+			if( (xArr[idxl] <= iRightX || xArr[idx0] <= iRightX) && (xArr[idxr] >= iLeftX || xArr[idx0] >= iLeftX) )
+			{
+				float inv_dyl = 1.0f / (yArr[idxl] - yArr[idx0]);
+				float inv_dyr = 1.0f / (yArr[idxr] - yArr[idx0]);
+				//use for interpolation
+				float dzl = (zArr[idxl] - zArr[idx0]) * inv_dyl;
+				float dxl = (float)(xArr[idxl] - xArr[idx0]) * inv_dyl;
+				float dzr = (zArr[idxr] - zArr[idx0]) * inv_dyr;
+				float dxr = (float)(xArr[idxr] - xArr[idx0]) * inv_dyr;
+
+				float dul = (uArr[idxl] - uArr[idx0]) * inv_dyl;
+				float dvl = (vArr[idxl] - vArr[idx0]) * inv_dyl;
+				float dur = (uArr[idxr] - uArr[idx0]) * inv_dyr;
+				float dvr = (vArr[idxr] - vArr[idx0]) * inv_dyr;
+
+				float drl = (rArr[idxl] - rArr[idx0]) * inv_dyl;
+				float dgl = (gArr[idxl] - gArr[idx0]) * inv_dyl;
+				float dbl = (bArr[idxl] - bArr[idx0]) * inv_dyl;
+				float dal = (aArr[idxl] - aArr[idx0]) * inv_dyl;
+				float drr = (rArr[idxr] - rArr[idx0]) * inv_dyr;
+				float dgr = (gArr[idxr] - gArr[idx0]) * inv_dyr;
+				float dbr = (bArr[idxr] - bArr[idx0]) * inv_dyr;
+				float dar = (aArr[idxr] - aArr[idx0]) * inv_dyr;
+
+				float xl = xArr[idx0];
+				float xr = xArr[idx0];
+				float zl = zArr[idx0];
+				float zr = zArr[idx0];
+				float ul = uArr[idx0];
+				float ur = uArr[idx0];
+				float vl = vArr[idx0];
+				float vr = vArr[idx0];
+				float rl = rArr[idx0];
+				float gl = gArr[idx0];
+				float bl = bArr[idx0];
+				float al = aArr[idx0];
+				float rr = rArr[idx0];
+				float gr = gArr[idx0];
+				float br = bArr[idx0];
+				float ar = aArr[idx0];
+
+				dy = iBottomY - yb;
+				if(dy > 0)
+				{
+					xl += dxl * dy;
+					xr += dxr * dy;
+					zl += dzl * dy;
+					zr += dzr * dy;
+					ul += dul * dy;
+					ur += dur * dy;
+					vl += dvl * dy;
+					vr += dvr * dy;
+					rl += drl * dy;
+					rr += drr * dy;
+					gl += dgl * dy;
+					gr += dgr * dy;
+					bl += dbl * dy;
+					br += dbr * dy;
+					al += dal * dy;
+					ar += dar * dy;
+					yb = iBottomY;
+				}
+				int end_y = mid_y > iTopY ? iTopY : mid_y;
+				while(yb <= end_y)
+				{
+					int dx = xr - xl;
+					if(dx > 0){
+						ui = ul;
+						vi = vl;
+						ri = rl;
+						gi = gl;
+						bi = bl;
+						ai = al;
+						zi = zl;
+
+						float inv_dx = 1.0f / dx;
+						float du = (ur - ul) * inv_dx;
+						float dv = (vr - vl) * inv_dx;
+						float dr = (rr - rl) * inv_dx;
+						float dg = (gr - gl) * inv_dx;
+						float db = (br - bl) * inv_dx;
+						float da = (ar - al) * inv_dx;
+						float dz = (zr - zl) * inv_dx;
+
+						int i_xl = Math::ceil(xl);
+						dx = iLeftX - i_xl;
+						if(dx > 0)
+						{
+							ri += dx * dr;
+							gi += dx * dg;
+							bi += dx * db;
+							ai += dx * da;
+							ui += dx * du;
+							vi += dx * dv;
+							zi += dx * dz;
+							i_xl = iLeftX;
+						}
+						int i_xr = Math::ceil(xr);
+						i_xr = i_xr < iRightX ? i_xr : iRightX;
+						colorBuf = _bColorBuffer + yb * bytesPerRow + i_xl * colorBytes;
+						depthBuf = _fDepthBuffer + yb * iWidth + i_xl;
+						for (int x = i_xl; x < i_xr; ++x)
+						{	
+							if(*depthBuf > zi){
+								float inv_z = 1.0f / zi;
+								int u = (int)(ui * inv_z + 0.5f);
+								int v = (int)(vi * inv_z + 0.5f);
+								byte *pImg = imgBuf + (v * width + u) * 3;
+								byte tr = *pImg;
+								byte tg = *(pImg + 1);
+								byte tb = *(pImg + 2);
+								*colorBuf = (byte)(ri * inv_z) * tr >> 8;
+								*(colorBuf + 1) = (byte)(gi * inv_z) * tg >> 8;
+								*(colorBuf + 2) = (byte)(bi * inv_z) * tb >> 8;
+								*depthBuf = zi;
+							}
+							colorBuf += colorBytes;
+							++depthBuf;
+							ri += dr;
+							gi += dg;
+							bi += db;
+							ai += da;
+							ui += du;
+							vi += dv;
+							zi += dz;
+						}
+					}
+					xl += dxl;
+					xr += dxr;
+					zl += dzl;
+					zr += dzr;
+					ul += dul;
+					ur += dur;
+					vl += dvl;
+					vr += dvr;
+					rl += drl;
+					rr += drr;
+					gl += dgl;
+					gr += dgr;
+					bl += dbl;
+					br += dbr;
+					al += dal;
+					ar += dar;
+					++yb;
+				}
+			}
+		}
+		//draw top triangle
+		if(yArr[idx2] != yArr[idx1] && mid_y <= iTopY && yt >= iBottomY) {
+			//sort v0, v1 by x value
+			int idxl = idx0;
+			int idxr = idx1;
+			int distX = xArr[idxl] - xArr[idxr];
+			if( (distX > 0) || (distX == 0 && xArr[idx0] < xArr[idx2]) )
+			{
+				tmp_idx = idxl;
+				idxl = idxr;
+				idxr = tmp_idx;
+			}//end sort
+			if( (xArr[idxl] <= iRightX || xArr[idxr] <= iRightX) && (xArr[idx1] >= iLeftX || xArr[idxr] >= iLeftX) )
+			{
+				float inv_dyl = 1.0f / (yArr[idx2] - yArr[idxl]);
+				float inv_dyr = 1.0f / (yArr[idx2] - yArr[idxr]);
+				//use for interpolation
+				float dzl = (zArr[idxl] - zArr[idx2]) * inv_dyl;
+				float dzr = (zArr[idxr] - zArr[idx2]) * inv_dyr;
+				float dxl = (float)(xArr[idxl] - xArr[idx2]) * inv_dyl;
+				float dxr = (float)(xArr[idxr] - xArr[idx2]) * inv_dyr;
+
+				float dul = (uArr[idxl] - uArr[idx2]) * inv_dyl;
+				float dvl = (vArr[idxl] - vArr[idx2]) * inv_dyl;
+				float dur = (uArr[idxr] - uArr[idx2]) * inv_dyr;
+				float dvr = (vArr[idxr] - vArr[idx2]) * inv_dyr;
+
+				float drl = (rArr[idxl] - rArr[idx2]) * inv_dyl;
+				float dgl = (gArr[idxl] - gArr[idx2]) * inv_dyl;
+				float dbl = (bArr[idxl] - bArr[idx2]) * inv_dyl;
+				float dal = (aArr[idxl] - aArr[idx2]) * inv_dyl;
+				float drr = (rArr[idxr] - rArr[idx2]) * inv_dyr;
+				float dgr = (gArr[idxr] - gArr[idx2]) * inv_dyr;
+				float dbr = (bArr[idxr] - bArr[idx2]) * inv_dyr;
+				float dar = (aArr[idxr] - aArr[idx2]) * inv_dyr;
+
+				float xl = xArr[idx2];
+				float xr = xArr[idx2];
+				float zl = zArr[idx2];
+				float zr = zArr[idx2];
+				float ul = uArr[idx2];
+				float ur = uArr[idx2];
+				float vl = vArr[idx2];
+				float vr = vArr[idx2];
+				float rl = rArr[idx2];
+				float gl = gArr[idx2];
+				float bl = bArr[idx2];
+				float al = aArr[idx2];
+				float rr = rArr[idx2];
+				float gr = gArr[idx2];
+				float br = bArr[idx2];
+				float ar = aArr[idx2];
+
+				dy = yt - iTopY;
+				if(dy > 0)
+				{
+					xl += dxl * dy;
+					xr += dxr * dy;
+					zl += dzl * dy;
+					zr += dzr * dy;
+					ul += dul * dy;
+					ur += dur * dy;
+					vl += dvl * dy;
+					vr += dvr * dy;
+					rl += drl * dy;
+					rr += drr * dy;
+					gl += dgl * dy;
+					gr += dgr * dy;
+					bl += dbl * dy;
+					br += dbr * dy;
+					al += dal * dy;
+					ar += dar * dy;
+					yt = iTopY;
+				}
+				int end_y = mid_y > iBottomY ? mid_y : iBottomY;
+				while (yt > end_y)
+				{
+					int dx = xr - xl;
+					if(dx > 0){
+						ui = ul;
+						vi = vl;
+						ri = rl;
+						gi = gl;
+						bi = bl;
+						ai = al;
+						zi = zl;
+
+						float inv_dx = 1.0f / dx;
+						float du = (ur - ul) * inv_dx;
+						float dv = (vr - vl) * inv_dx;
+						float dr = (rr - rl) * inv_dx;
+						float dg = (gr - gl) * inv_dx;
+						float db = (br - bl) * inv_dx;
+						float da = (ar - al) * inv_dx;
+						float dz = (zr - zl) * inv_dx;
+
+						int i_xl = Math::ceil(xl);
+						dx = iLeftX - i_xl;
+						if(dx > 0)
+						{
+							ri += dx * dr;
+							gi += dx * dg;
+							bi += dx * db;
+							ai += dx * da;
+							ui += dx * du;
+							vi += dx * dv;
+							zi += dx * dz;
+							i_xl = iLeftX;
+						}
+						int i_xr = Math::ceil(xr);
+						i_xr = i_xr < iRightX ? i_xr : iRightX;
+						colorBuf = _bColorBuffer + yt * bytesPerRow + i_xl * colorBytes;
+						depthBuf = _fDepthBuffer + yt * iWidth + i_xl;
+						for (int x = i_xl; x < i_xr; ++x)
+						{
+							if(*depthBuf > zi){
+								float inv_z = 1.0f / zi;
+								int u = (int)(ui * inv_z + 0.5f);
+								int v = (int)(vi * inv_z + 0.5f);
+								byte *pImg = imgBuf + (v * width + u) * 3;
+								byte tr = *pImg;
+								byte tg = *(pImg + 1);
+								byte tb = *(pImg + 2);
+								*colorBuf = (byte)(ri * inv_z) * tr >> 8;
+								*(colorBuf + 1) = (byte)(gi * inv_z) * tg >> 8;
+								*(colorBuf + 2) = (byte)(bi * inv_z) * tb >> 8;
+								*depthBuf = zi;
+							}
+							colorBuf += colorBytes;
+							++depthBuf;
+							ri += dr;
+							gi += dg;
+							bi += db;
+							ai += da;
+							ui += du;
+							vi += dv;
+							zi += dz;
+						}
+					}
+					xl += dxl;
+					xr += dxr;
+					zl += dzl;
+					zr += dzr;
+					ul += dul;
+					ur += dur;
+					vl += dvl;
+					vr += dvr;
+					rl += drl;
+					rr += drr;
+					gl += dgl;
+					gr += dgr;
+					bl += dbl;
+					br += dbr;
+					al += dal;
+					ar += dar;
+					--yt;
+				}
+			}
+		}
 	}
 	
 	void SoftwareRenderer::setClearColor(const ColorRGBA &color)
@@ -661,6 +1979,19 @@ namespace GPEngine3D{
 	{
 		_clearColorBuffer();
 		_clearDepthBuffer();
+
+		byte *buf = _bColorBuffer;
+		for(int row = 0; row < 64; ++row)
+		{
+			buf = _bColorBuffer + iWidth * 3 * row;
+			for(int col = 0; col < 64; ++col)
+			{
+				byte c = (((row & 0x8) == 0) ^ ((col & 0x8) == 0)) * 255;
+				*buf++ = (GLubyte)c;
+				*buf++ = (GLubyte)c;
+				*buf++ = (GLubyte)c;
+			}
+		}
 	}
 
 	void SoftwareRenderer::_clearColorBuffer()
@@ -714,22 +2045,83 @@ namespace GPEngine3D{
 	{
 		//_cameraToProjectionTransform(buffer, offset, mat, faceCount);
 		//_ProjectionToScreenTransform(buffer, offset, faceCount);
-
+		if(buffer.isEnabled(POLY_ATTR::ENABLE_TEX))
+		{
+			Texture2D *img = buffer.getTexture();
+			if(img){
+				if(buffer.isEnabled(POLY_ATTR::ENABLE_COLOR)){
+					for(int index = offset; index < offset + faceCount; ++index)
+					{
+						drawTriangleSolidColorTex(buffer.triangleArray[index], *img);
+					}
+					return;
+				}else{
+					for(int index = offset; index < offset + faceCount; ++index)
+					{
+						drawTriangleSolidTexLinear(buffer.triangleArray[index], *img);
+					}
+					return;
+				}	
+			}else{
+				if(buffer.isEnabled(POLY_ATTR::ENABLE_COLOR)){
+					for(int index = offset; index < offset + faceCount; ++index)
+					{
+						drawTriangleSolidColor(buffer.triangleArray[index]);
+					}
+					return;
+				}
+			}
+		}
 		for(int index = offset; index < offset + faceCount; ++index)
 		{
-			drawTriangleSolid(buffer.triangleArray[index]);
+			drawTriangleSolidFlat(buffer.triangleArray[index]);
 		}
 	}
 	
 	void SoftwareRenderer::drawElements(RenderList &buffer, GLushort *const indices, uint_32 count)
 	{
-		for(int index = 0; index < count; )
+		if(buffer.isEnabled(POLY_ATTR::ENABLE_TEX))
 		{
-			Vertex &v0 = buffer.tranList[indices[index++]];
-			Vertex &v1 = buffer.tranList[indices[index++]];
-			Vertex &v2 = buffer.tranList[indices[index++]];
-			drawTriangleSolid(v0, v1, v2);
+			Texture2D *img = buffer.getTexture();
+			if(img){
+				if(buffer.isEnabled(POLY_ATTR::ENABLE_COLOR)){
+					for(int index = 0; index < count; )
+					{
+						Vertex &v0 = buffer.tranList[indices[index++]];
+						Vertex &v1 = buffer.tranList[indices[index++]];
+						Vertex &v2 = buffer.tranList[indices[index++]];
+						// drawTriangleSolidTexNearest(v0, v1, v2, *img);
+						drawTriangleSolidColorTex(v0, v1, v2, *img);
+					}
+					return;
+				}else{
+					for(int index = 0; index < count; )
+					{
+						Vertex &v0 = buffer.tranList[indices[index++]];
+						Vertex &v1 = buffer.tranList[indices[index++]];
+						Vertex &v2 = buffer.tranList[indices[index++]];
+						drawTriangleSolidTexLinear(v0, v1, v2, *img);
+					}
+					return;
+				}
+			}
+		}else{
+			for(int index = 0; index < count; )
+			{
+				Vertex &v0 = buffer.tranList[indices[index++]];
+				Vertex &v1 = buffer.tranList[indices[index++]];
+				Vertex &v2 = buffer.tranList[indices[index++]];
+				drawTriangleSolidColor(v0, v1, v2);
+			}
+			return;
 		}
+		for(int index = 0; index < count; )
+			{
+				Vertex &v0 = buffer.tranList[indices[index++]];
+				Vertex &v1 = buffer.tranList[indices[index++]];
+				Vertex &v2 = buffer.tranList[indices[index++]];
+				drawTriangleSolidFlat(v0, v1, v2);
+			}
 	}
 	/*
 	after this transform, the x param of each vertex will be in range[0, ScreenWidth - 1],

@@ -13,7 +13,7 @@ namespace GPEngine3D {
     {
         //todo
         //load image here
-        byte *imageData = image->getBytes();
+        byte *imageData = image->getData();
         init(imageData);
         hint = NICE;
     }

@@ -42,7 +42,7 @@ namespace GPEngine3D {
         this->bImageData = bytes;
     }
     
-    byte *const Image::getBytes() const
+    byte *const Image::getData() const
     {
         return bImageData;
     }

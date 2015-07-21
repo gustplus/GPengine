@@ -7,6 +7,7 @@
 #include "GPRenderer.h"
 #include "GPRenderStructures.h"
 #include "GPMatrix4.h"
+#include "GPSoftwareTexture.h"
 
 namespace GPEngine3D{
 	class SoftwareRenderer :
@@ -26,10 +27,16 @@ namespace GPEngine3D{
 		void drawLine(const Point2i &v0, const Point2i &v1, const Color3b &color);
 		void drawLine(int x0, int y0, int x1, int y1, const Color3b &color);
 
-		void drawTriangleSolid(const PolyTriangle &triangle);
-		void drawTriangleSolid(const Vertex &v0, const Vertex & v1, const Vertex &v2);
-		void drawTriangleSolid(const Point2f &v0, const Point2f &v1, const Point2f &v2, const Color3b &color);
-		void drawTriangleSolid(int x0, int y0, int x1, int y1, int x2, int y2, const Color3b &color);
+		void drawTriangleSolidFlat(const PolyTriangle &triangle);
+		void drawTriangleSolidFlat(const Vertex &v0, const Vertex & v1, const Vertex &v2);
+		void drawTriangleSolidColor(const PolyTriangle &triangle);
+		void drawTriangleSolidColor(const Vertex &v0, const Vertex & v1, const Vertex &v2);
+		void drawTriangleSolidTexNearest(const PolyTriangle &triangle, const Texture2D &tex);
+		void drawTriangleSolidTexNearest(const Vertex &v0, const Vertex & v1, const Vertex &v2, const Texture2D &tex);
+		void drawTriangleSolidTexLinear(const PolyTriangle &triangle, const Texture2D &tex);
+		void drawTriangleSolidTexLinear(const Vertex &v0, const Vertex & v1, const Vertex &v2, const Texture2D &tex);
+		void drawTriangleSolidColorTex(const PolyTriangle &triangle, const Texture2D &tex);
+		void drawTriangleSolidColorTex(const Vertex &v0, const Vertex & v1, const Vertex &v2, const Texture2D &tex);
 
 		void clearBuffer();
 		void clearBuffer(ATTR_FLAG flags);

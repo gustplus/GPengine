@@ -228,6 +228,9 @@
     <ClInclude Include="renderer\GPRenderStructures.h">
       <Filter>renderer</Filter>
     </ClInclude>
+    <ClInclude Include="renderer\Software\GPSoftwareTexture.h">
+      <Filter>soft_renderer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TestScreen.cpp">
@@ -337,6 +340,9 @@
     </ClCompile>
     <ClCompile Include="math\gpmath.cpp">
       <Filter>math</Filter>
+    </ClCompile>
+    <ClCompile Include="renderer\Software\GPSoftwareTexture.cpp">
+      <Filter>soft_renderer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

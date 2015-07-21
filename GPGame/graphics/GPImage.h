@@ -26,8 +26,18 @@ namespace GPEngine3D{
         void initWithFile(const std::string &fileName);
         
         void initWithBytes(byte *bytes, int width, int height);
+
+        int getWidth() const
+        {
+            return iWidth;
+        }
+
+        int getHeight() const
+        {
+            return iHeight;
+        }
         
-        byte *const getBytes() const;
+        byte *const getData() const;
         
     private:
         byte *bImageData;

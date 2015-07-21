@@ -134,6 +134,7 @@
     <ClInclude Include="renderer\GPRenderStructures.h" />
     <ClInclude Include="renderer\RenderDefs.h" />
     <ClInclude Include="renderer\Software\GPSoftwareRenderer.h" />
+    <ClInclude Include="renderer\Software\GPSoftwareTexture.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="system\GPOpenGLStateManager.h" />
     <ClInclude Include="system\GPSystem.h" />
@@ -174,6 +175,7 @@
     <ClCompile Include="renderer\GPRenderer.cpp" />
     <ClCompile Include="renderer\GPRenderStructures.cpp" />
     <ClCompile Include="renderer\Software\GPSoftwareRenderer.cpp" />
+    <ClCompile Include="renderer\Software\GPSoftwareTexture.cpp" />
     <ClCompile Include="system\GPOpenGLStateManager.cpp" />
     <ClCompile Include="TestScreen.cpp" />
     <ClCompile Include="utils\GPLogger.cpp" />
