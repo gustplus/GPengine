@@ -5,10 +5,18 @@
 #include <stdio.h>
 
 namespace GPEngine3D{
+	float invValues[12] = 
+	{
+	 	0.0f, 0.0f, 0.5f, 2.0f / 3, 0.75f,
+	 	0.8f, 5.0f / 6, 6.0f / 7, 0.875f,
+	 	8.0f / 9, 0.99f, 10.0f / 11
+	};
+
 	SoftwareRenderer::SoftwareRenderer(PixelFormat pixel_format, char depthBits, char stencilBits, bool doubleBuffer, int width, int height):
 		Renderer(pFormat, cDepthBits, cStencilBits, doubleBuffer, width, height),
 		_fDepthBuffer(nullptr),
-		_attr(ATTR_FLAG::COLOR_BUFFER)
+		_attr(ATTR_FLAG::COLOR_BUFFER),
+		_cullMode(CCW)
 	{
 		_bColorBuffer = GP_NEW_ARRAY(byte, iWidth * iHeight * colorBytes);
 		_clearColor.r = 0;
@@ -726,13 +734,13 @@ namespace GPEngine3D{
 		}
 	}
 
-	void SoftwareRenderer::drawTriangleSolidTexNearest(const PolyTriangle &triangle, const Texture2D &img)
+	void SoftwareRenderer::drawTriangleSolidTexNearest(const PolyTriangle &triangle, const Texture2D &tex)
 	{
 		const Vertex &v0 = triangle.tranList[0];
 		const Vertex &v1 = triangle.tranList[1];
 		const Vertex &v2 = triangle.tranList[2];
 
-		drawTriangleSolidTexNearest(v0, v1, v2, img);
+		drawTriangleSolidTexNearest(v0, v1, v2, tex);
 	}
 	
 	void SoftwareRenderer::drawTriangleSolidTexNearest(const Vertex &v0, const Vertex & v1, const Vertex &v2, const Texture2D &tex)
@@ -745,8 +753,14 @@ namespace GPEngine3D{
 		int yArr[3] = {(int)(v0.p.y + 0.5f), (int)(v1.p.y + 0.5f), (int)(v2.p.y + 0.5f)};
 		float zArr[3] = {v0.p.w, v1.p.w, v2.p.w};
 
-		int width = tex.getWidth();
-		int height = tex.getHeight();
+		float avgZ = (v0.p.z + v1.p.z + v2.p.z) / 3;
+		//now avgZ is in range [0, 1]
+		int maxMipmapLv = tex.getMaxMipmapLevel();
+		int mipmapLv = int(avgZ / invValues[maxMipmapLv]);
+		Image *img = tex.getImage(mipmapLv);
+
+		int width = img->getWidth();
+		int height = img->getHeight();
 		float uArr[3] = {v0.uv.x * zArr[0] * (width - 1), v1.uv.x * zArr[1] * (width - 1), v2.uv.x * zArr[2] * (width - 1)};
 		float vArr[3] = {v0.uv.y * zArr[0] * (height - 1), v1.uv.y * zArr[1] * (height - 1), v2.uv.y * zArr[2] * (height - 1)};
 
@@ -803,7 +817,7 @@ namespace GPEngine3D{
 		byte *colorBuf;
 		float *depthBuf;
 
-		byte *imgBuf = tex.getData();
+		byte *imgBuf = img->getData();
 		//draw down triangle
 		if(yArr[idx0] != yArr[idx1] && mid_y >= iBottomY && yb <= iTopY) {
 			//sort v1, v2 by x value
@@ -1118,13 +1132,13 @@ namespace GPEngine3D{
 		}
 	}
 
-	void SoftwareRenderer::drawTriangleSolidTexLinear(const PolyTriangle &triangle, const Texture2D &img)
+	void SoftwareRenderer::drawTriangleSolidTexLinear(const PolyTriangle &triangle, const Texture2D &tex)
 	{
 		const Vertex &v0 = triangle.tranList[0];
 		const Vertex &v1 = triangle.tranList[1];
 		const Vertex &v2 = triangle.tranList[2];
 
-		drawTriangleSolidTexLinear(v0, v1, v2, img);
+		drawTriangleSolidTexLinear(v0, v1, v2, tex);
 	}
 	
 	void SoftwareRenderer::drawTriangleSolidTexLinear(const Vertex &v0, const Vertex & v1, const Vertex &v2, const Texture2D &tex)
@@ -1137,8 +1151,14 @@ namespace GPEngine3D{
 		int yArr[3] = {(int)(v0.p.y + 0.5f), (int)(v1.p.y + 0.5f), (int)(v2.p.y + 0.5f)};
 		float zArr[3] = {v0.p.w, v1.p.w, v2.p.w};
 
-		int width = tex.getWidth();
-		int height = tex.getHeight();
+		float avgZ = (v0.p.z + v1.p.z + v2.p.z) / 3;
+		//now avgZ is in range [0, 1]
+		int maxMipmapLv = tex.getMaxMipmapLevel();
+		int mipmapLv = int(avgZ / invValues[maxMipmapLv]);
+		Image *img = tex.getImage(mipmapLv);
+
+		int width = img->getWidth();
+		int height = img->getHeight();
 		float uArr[3] = {v0.uv.x * zArr[0] * (width - 1), v1.uv.x * zArr[1] * (width - 1), v2.uv.x * zArr[2] * (width - 1)};
 		float vArr[3] = {v0.uv.y * zArr[0] * (height - 1), v1.uv.y * zArr[1] * (height - 1), v2.uv.y * zArr[2] * (height - 1)};
 
@@ -1195,7 +1215,7 @@ namespace GPEngine3D{
 		byte *colorBuf;
 		float *depthBuf;
 
-		byte *imgBuf = tex.getData();
+		byte *imgBuf = img->getData();
 		//draw down triangle
 		if(yArr[idx0] != yArr[idx1] && mid_y >= iBottomY && yb <= iTopY) {
 			//sort v1, v2 by x value
@@ -1560,13 +1580,13 @@ namespace GPEngine3D{
 		}
 	}
 
-	void SoftwareRenderer::drawTriangleSolidColorTex(const PolyTriangle &triangle, const Texture2D &img)
+	void SoftwareRenderer::drawTriangleSolidColorTex(const PolyTriangle &triangle, const Texture2D &tex)
 	{
 		const Vertex &v0 = triangle.tranList[0];
 		const Vertex &v1 = triangle.tranList[1];
 		const Vertex &v2 = triangle.tranList[2];
 
-		drawTriangleSolidColorTex(v0, v1, v2, img);
+		drawTriangleSolidColorTex(v0, v1, v2, tex);
 	}
 
 	void SoftwareRenderer::drawTriangleSolidColorTex(const Vertex &v0, const Vertex & v1, const Vertex &v2, const Texture2D &tex)
@@ -1579,8 +1599,14 @@ namespace GPEngine3D{
 		int yArr[3] = {(int)(v0.p.y + 0.5f), (int)(v1.p.y + 0.5f), (int)(v2.p.y + 0.5f)};
 		float zArr[3] = {v0.p.w, v1.p.w, v2.p.w};
 
-		int width = tex.getWidth();
-		int height = tex.getHeight();
+		float avgZ = (v0.p.z + v1.p.z + v2.p.z) / 3;
+		//now avgZ is in range [0, 1]
+		int maxMipmapLv = tex.getMaxMipmapLevel();
+		int mipmapLv = int(avgZ / invValues[maxMipmapLv]);
+		Image *img = tex.getImage(mipmapLv);
+
+		int width = img->getWidth();
+		int height = img->getHeight();
 		float uArr[3] = {v0.uv.x * zArr[0] * (width - 1), v1.uv.x * zArr[1] * (width - 1), v2.uv.x * zArr[2] * (width - 1)};
 		float vArr[3] = {v0.uv.y * zArr[0] * (height - 1), v1.uv.y * zArr[1] * (height - 1), v2.uv.y * zArr[2] * (height - 1)};
 
@@ -1637,7 +1663,7 @@ namespace GPEngine3D{
 		byte *colorBuf;
 		float *depthBuf;
 
-		byte *imgBuf = tex.getData();
+		byte *imgBuf = img->getData();
 
 		//draw down triangle
 		if(yArr[idx0] != yArr[idx1] && mid_y >= iBottomY && yb <= iTopY) {
@@ -2043,22 +2069,20 @@ namespace GPEngine3D{
 
 	void SoftwareRenderer::drawArray(PolyObject &buffer, uint_32 offset, uint_32 faceCount)
 	{
-		//_cameraToProjectionTransform(buffer, offset, mat, faceCount);
-		//_ProjectionToScreenTransform(buffer, offset, faceCount);
 		if(buffer.isEnabled(POLY_ATTR::ENABLE_TEX))
 		{
-			Texture2D *img = buffer.getTexture();
-			if(img){
+			Texture2D *tex = buffer.getTexture();
+			if(tex){
 				if(buffer.isEnabled(POLY_ATTR::ENABLE_COLOR)){
 					for(int index = offset; index < offset + faceCount; ++index)
 					{
-						drawTriangleSolidColorTex(buffer.triangleArray[index], *img);
+						drawTriangleSolidColorTex(buffer.triangleArray[index], *tex);
 					}
 					return;
 				}else{
 					for(int index = offset; index < offset + faceCount; ++index)
 					{
-						drawTriangleSolidTexLinear(buffer.triangleArray[index], *img);
+						drawTriangleSolidTexLinear(buffer.triangleArray[index], *tex);
 					}
 					return;
 				}	
@@ -2082,17 +2106,20 @@ namespace GPEngine3D{
 	{
 		if(buffer.isEnabled(POLY_ATTR::ENABLE_TEX))
 		{
-			Texture2D *img = buffer.getTexture();
-			if(img){
+			Texture2D *tex = buffer.getTexture();
+			if(tex){
 				if(buffer.isEnabled(POLY_ATTR::ENABLE_COLOR)){
 					for(int index = 0; index < count; )
 					{
 						Vertex &v0 = buffer.tranList[indices[index++]];
 						Vertex &v1 = buffer.tranList[indices[index++]];
 						Vertex &v2 = buffer.tranList[indices[index++]];
-						// drawTriangleSolidTexNearest(v0, v1, v2, *img);
-						drawTriangleSolidColorTex(v0, v1, v2, *img);
-					}
+						// drawTriangleSolidTexNearest(v0, v1, v2, *tex);
+						if(isFaceVisible(v0.p, v1.p, v2.p, _cullMode))
+						{
+							drawTriangleSolidColorTex(v0, v1, v2, *tex);
+						}
+					}	
 					return;
 				}else{
 					for(int index = 0; index < count; )
@@ -2100,7 +2127,10 @@ namespace GPEngine3D{
 						Vertex &v0 = buffer.tranList[indices[index++]];
 						Vertex &v1 = buffer.tranList[indices[index++]];
 						Vertex &v2 = buffer.tranList[indices[index++]];
-						drawTriangleSolidTexLinear(v0, v1, v2, *img);
+						if(isFaceVisible(v0.p, v1.p, v2.p, _cullMode))
+						{
+							drawTriangleSolidTexLinear(v0, v1, v2, *tex);
+						}
 					}
 					return;
 				}
@@ -2111,7 +2141,10 @@ namespace GPEngine3D{
 				Vertex &v0 = buffer.tranList[indices[index++]];
 				Vertex &v1 = buffer.tranList[indices[index++]];
 				Vertex &v2 = buffer.tranList[indices[index++]];
-				drawTriangleSolidColor(v0, v1, v2);
+				if(isFaceVisible(v0.p, v1.p, v2.p, _cullMode))
+				{
+					drawTriangleSolidColor(v0, v1, v2);
+				}
 			}
 			return;
 		}
@@ -2120,13 +2153,37 @@ namespace GPEngine3D{
 				Vertex &v0 = buffer.tranList[indices[index++]];
 				Vertex &v1 = buffer.tranList[indices[index++]];
 				Vertex &v2 = buffer.tranList[indices[index++]];
-				drawTriangleSolidFlat(v0, v1, v2);
+				if(isFaceVisible(v0.p, v1.p, v2.p, _cullMode))
+				{
+					drawTriangleSolidFlat(v0, v1, v2);
+				}
 			}
 	}
+
+	void SoftwareRenderer::_removeBackFaces(PolyObject &buffer, uint_32 offset, uint_32 count)
+	{
+		for (int index = offset; index < offset + count; ++index)
+		{
+			buffer.triangleArray[index].attr = 0;
+			vec3f p0 = buffer.triangleArray[index].tranList[0].p;
+			vec3f p1 = buffer.triangleArray[index].tranList[1].p;
+			vec3f p2 = buffer.triangleArray[index].tranList[2].p;
+			vec3f v0(p0, p1);
+			vec3f v1(p1, p2);
+			vec3f normal = v0.crossMul(v1);
+			buffer.triangleArray[index].normal = normal;
+			float dot = p0.dotMul(normal);
+			if(dot * _cullMode > 0)
+			{
+				buffer.triangleArray[index].attr = -1;
+			}
+		}
+	}
+
 	/*
 	after this transform, the x param of each vertex will be in range[0, ScreenWidth - 1],
 	the y param will be in range[0, ScreenWidth - 1],
-	the z param will be in range [0, 1]
+	the z param will be -z // in range [0, 1]
 	and w param will be -1 / z
 	*/
 	void SoftwareRenderer::projectionToScreenTransform(PolyObject &buffer, uint_32 offset, uint_32 count)
@@ -2138,19 +2195,22 @@ namespace GPEngine3D{
 			buffer.triangleArray[index].tranList[0].p.x = (buffer.triangleArray[index].tranList[0].p.x * inv_w + 1.0f) * iWidth * 0.5f;
 			buffer.triangleArray[index].tranList[0].p.y = (buffer.triangleArray[index].tranList[0].p.y * inv_w + 1.0f) * iHeight * 0.5f;
 			buffer.triangleArray[index].tranList[0].p.z = (buffer.triangleArray[index].tranList[0].p.z * inv_w + 1.0f) * 0.5f;
+			// buffer.triangleArray[index].tranList[0].p.z = -buffer.triangleArray[index].tranList[0].p.w;
 			buffer.triangleArray[index].tranList[0].p.w = -inv_w;
 
 			inv_w = 1.0f / buffer.triangleArray[index].tranList[1].p.w;
 			buffer.triangleArray[index].tranList[1].p.x = (buffer.triangleArray[index].tranList[1].p.x * inv_w + 1.0f) * iWidth * 0.5f;
 			buffer.triangleArray[index].tranList[1].p.y = (buffer.triangleArray[index].tranList[1].p.y * inv_w + 1.0f) * iHeight * 0.5f;
 			buffer.triangleArray[index].tranList[1].p.z = (buffer.triangleArray[index].tranList[1].p.z * inv_w + 1.0f)* 0.5f;
-			buffer.triangleArray[index].tranList[1].p.w = -inv_w;
+			// buffer.triangleArray[index].tranList[1].p.z = -buffer.triangleArray[index].tranList[1].p.w;
+			buffer.triangleArray[index].tranList[1].p.w = inv_w;
 
 			inv_w = 1.0f / buffer.triangleArray[index].tranList[2].p.w;
 			buffer.triangleArray[index].tranList[2].p.x = (buffer.triangleArray[index].tranList[2].p.x * inv_w + 1.0f) * iWidth * 0.5f;
 			buffer.triangleArray[index].tranList[2].p.y = (buffer.triangleArray[index].tranList[2].p.y * inv_w + 1.0f) * iHeight * 0.5f;
 			buffer.triangleArray[index].tranList[2].p.z = (buffer.triangleArray[index].tranList[2].p.z * inv_w + 1.0f)* 0.5f;
-			buffer.triangleArray[index].tranList[2].p.w = -inv_w;
+			// buffer.triangleArray[index].tranList[2].p.z = -buffer.triangleArray[index].tranList[2].p.w;
+			buffer.triangleArray[index].tranList[2].p.w = inv_w;
 
 		}
 	}
@@ -2162,10 +2222,11 @@ namespace GPEngine3D{
 		{
 			vec4f &v = buffer.tranList[idx].p;
 			float inv_w = 1.0f / v.w;
-			v.x = (v.x * inv_w + 1.0f) * iWidth * 0.5f;
-			v.y = (v.y * inv_w + 1.0f) * iHeight * 0.5f;
+			v.x = (v.x * inv_w + 1.0f) * 0.5f * iWidth;
+			v.y = (v.y * inv_w + 1.0f) * 0.5f * iHeight;
+			// printf("z0 = %f\n", v.z * inv_w);
 			v.z = (v.z * inv_w + 1.0f) * 0.5;
-			v.w = -inv_w;
+			v.w = inv_w;
 		}
 	}
 

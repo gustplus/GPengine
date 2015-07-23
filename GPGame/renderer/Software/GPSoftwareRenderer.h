@@ -1,5 +1,5 @@
-#ifndef _SOFTWARE_VIEW_H_
-#define _SOFTWARE_VIEW_H_
+#ifndef _SOFTWARE_RENDERER_H_
+#define _SOFTWARE_RENDERER_H_
 
 #include "GPVector.h"
 #include "types.h"
@@ -47,23 +47,25 @@ namespace GPEngine3D{
 
 		void _clearColorBuffer();
 		void _clearDepthBuffer();
+
+		void cullFace(CullMode mode){_cullMode = mode;}
+
+		void _removeBackFaces(PolyObject &buffer, uint_32 offset, uint_32 count);
+		// void _removeBackFaces(RenderList &buffer);
 		
-		//I decide to take these two function out of draw functions, because if the model if no change, there is no need to recalculate
+		//I decide to take these two function out of draw functions, because if the model isn't change, there is no need to recalculate
 		void projectionToScreenTransform(PolyObject &buffer, uint_32 offset, uint_32 count);
 		void projectionToScreenTransform(RenderList &buffer);
 
 		void enable(ATTR_FLAG flag);
 		void disable(ATTR_FLAG flag);
-		// static const int_32 ATTR__BUFFER = 0x4;
 
 	private:
 		byte *_bColorBuffer;
 		float *_fDepthBuffer;
 
 		Color3b _clearColor;
-
-		//int iWidth;
-		//int iHeight;
+		CullMode _cullMode;
 
 		int iLeftX;
 		int iBottomY;
@@ -73,6 +75,8 @@ namespace GPEngine3D{
 
 		int_32 _attr;
 	};
+
+	extern float invValues[12];
 }
 
 #endif

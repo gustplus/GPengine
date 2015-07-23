@@ -34,6 +34,8 @@ namespace GPEngine3D{
 
 		static double atan2(double p_y, double p_x);
 	};
+
+	extern byte log2Map[513];
 }
 
 #endif

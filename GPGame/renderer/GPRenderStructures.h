@@ -9,6 +9,12 @@
 #include "GPMatrix4.h"
 #include "GPSoftwareTexture.h"
 
+#define CCW  1
+#define CW  -1
+#define NO_CULL  0
+
+#define CullMode int
+
 namespace GPEngine3D {
 enum class PixelFormat{
 	RGB,
@@ -55,6 +61,7 @@ typedef struct
 	Color4b color;
 	vec2f uv;
 	vec3f normal;
+	int normalLen;
 }Vertex;
 
 typedef struct
@@ -63,6 +70,8 @@ typedef struct
 	Vertex tranList[3];
 
 	vec3f normal;
+	int normalLen;
+	int attr;
 }PolyTriangle;
 
 enum POLY_ATTR{
@@ -120,6 +129,8 @@ private:
 void transformPolygen(PolyObject &buffer, uint_32 offset, const Matrix4 &projMat, uint_32 count);
 
 void transformRenderList(RenderList &buffer, const Matrix4 &projMat);
+
+bool isFaceVisible(const vec3f &p0, const vec3f &p1, const vec3f &p2, CullMode mode);
 
 }
 #endif

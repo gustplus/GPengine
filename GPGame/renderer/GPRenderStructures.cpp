@@ -172,20 +172,20 @@ namespace GPEngine3D{
 		{
 			PolyTriangle triangle;
 
-			triangle.localList[0].color.r = colors[offset++];
-			triangle.localList[0].color.g = colors[offset++];
-			triangle.localList[0].color.b = colors[offset++];
-			triangle.localList[0].color.a = colors[offset++];
+			triangle.tranList[0].color.r = colors[offset++];
+			triangle.tranList[0].color.g = colors[offset++];
+			triangle.tranList[0].color.b = colors[offset++];
+			triangle.tranList[0].color.a = colors[offset++];
 
-			triangle.localList[1].color.r = colors[offset++];
-			triangle.localList[1].color.g = colors[offset++];
-			triangle.localList[1].color.b = colors[offset++];
-			triangle.localList[1].color.a = colors[offset++];
+			triangle.tranList[1].color.r = colors[offset++];
+			triangle.tranList[1].color.g = colors[offset++];
+			triangle.tranList[1].color.b = colors[offset++];
+			triangle.tranList[1].color.a = colors[offset++];
 
-			triangle.localList[2].color.r = colors[offset++];
-			triangle.localList[2].color.g = colors[offset++];
-			triangle.localList[2].color.b = colors[offset++];
-			triangle.localList[2].color.a = colors[offset++];
+			triangle.tranList[2].color.r = colors[offset++];
+			triangle.tranList[2].color.g = colors[offset++];
+			triangle.tranList[2].color.b = colors[offset++];
+			triangle.tranList[2].color.a = colors[offset++];
 
 			triangleArray.push_back(triangle);
 
@@ -215,16 +215,16 @@ namespace GPEngine3D{
 
 		for(int_32 index = v_size; index < count; ++index)
 		{
-			PolyTriangle triangle;
+			PolyTriangle triangle = triangleArray[index];
 
-			triangle.localList[0].uv.x = texCoords[offset++];
-			triangle.localList[0].uv.y = texCoords[offset++];
+			triangle.tranList[0].uv.x = texCoords[offset++];
+			triangle.tranList[0].uv.y = texCoords[offset++];
 
-			triangle.localList[1].uv.x = texCoords[offset++];
-			triangle.localList[1].uv.y = texCoords[offset++];
+			triangle.tranList[1].uv.x = texCoords[offset++];
+			triangle.tranList[1].uv.y = texCoords[offset++];
 
-			triangle.localList[2].uv.x = texCoords[offset++];
-			triangle.localList[2].uv.y = texCoords[offset++];
+			triangle.tranList[2].uv.x = texCoords[offset++];
+			triangle.tranList[2].uv.y = texCoords[offset++];
 
 			triangleArray.push_back(triangle);
 
@@ -266,5 +266,18 @@ namespace GPEngine3D{
 		{
 			buffer.tranList[idx].p = mat * buffer.localList[idx].p;
 		}
+	}
+
+	bool isFaceVisible(const vec3f &p0, const vec3f &p1, const vec3f &p2, CullMode mode)
+	{
+		if(NO_CULL == mode)
+		{
+			return false;
+		}
+		vec3f v0(p0, p1);
+		vec3f v1(p1, p2);
+		vec3f normal = v0.crossMul(v1);
+		float dot = p0.dotMul(normal);
+		return (dot * mode) > 0;
 	}
 }

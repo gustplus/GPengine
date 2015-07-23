@@ -309,7 +309,7 @@ LRESULT CALLBACK GLViewImp::handleEvents(HWND hWnd, UINT message, WPARAM wParam,
 		}
 	case WM_MOUSEWHEEL:
 		{
-			int dir = (int)HIWORD(wParam);
+			int dir = GET_WHEEL_DELTA_WPARAM(wParam);
 			if(dir > 0)
 			{
 				KeyHandler::getInstance()->rollDir = 1;

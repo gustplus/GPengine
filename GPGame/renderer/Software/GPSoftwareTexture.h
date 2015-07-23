@@ -2,6 +2,7 @@
 #define _SOFTWARE_TEXTURE_H_
 
 #include "GPImage.h"
+#include "gpmath.h"
 
 namespace GPEngine3D {
 	enum class SampleFilter
@@ -18,26 +19,27 @@ namespace GPEngine3D {
 	{
 	public:
 		TextureProtocol();
-		~TextureProtocol();
+		virtual ~TextureProtocol();
 
-		virtual void initWithBytes(byte *bytes, int width, int height) = 0;
+		virtual void initWithBytes(byte *bytes, int width, int height, uint_32 bytesPerColor) = 0;
 		virtual void generateMipmap() = 0;
 		virtual void setFilters(SampleFilter minFilter, SampleFilter magFilter) = 0;
+		virtual bool disposeMipmap() = 0;
 
-		SampleFilter getMinFilter() {return _minFilter;};
-		SampleFilter getMagFilter() {return _magFilter;};
 
-		int getWidth() const {return _width;};
-		int getHeight() const {return _height;};
-		byte *const getData() const {
-			return _data;
+		SampleFilter getMinFilter() const {return _minFilter;};
+		SampleFilter getMagFilter() const {return _magFilter;};
+
+		int getMaxMipmapLevel() const {
+			return _mipmapLevel;
 		}
 
+		// virtual int getWidth() = 0;
+		// virtual int getHeight() = 0;
+		
 	protected:
-		bool _bIsmipmap;
-		byte *_data;
-		int _width;
-		int _height;
+		int _mipmapLevel;
+		uint_32 _bytesPerColor;
 	private:
 		SampleFilter _minFilter;
 		SampleFilter _magFilter;
@@ -46,9 +48,15 @@ namespace GPEngine3D {
 	class Texture2D : public TextureProtocol
 	{
 	public:
+		Texture2D():TextureProtocol(),_img(nullptr){}
+		virtual ~Texture2D();
 		void generateMipmap() override;
-		void initWithBytes(byte *bytes, int width, int height) override;
+		bool disposeMipmap() override;
+		void initWithBytes(byte *bytes, int width, int height, uint_32 bytesPerColor = 3) override;
 		void setFilters(SampleFilter minFilter, SampleFilter magFilter) override;
+		Image *const getImage(int level = 0) const;
+	private:
+		Image *_img;
 	};
 }
 

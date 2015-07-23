@@ -31,6 +31,7 @@ TestScreen::TestScreen(void):
 		}
 	}
 	tex.initWithBytes((byte *)buf, s, s);
+	tex.generateMipmap();
 
 	GLfloat uvs[] = {0.0f, 0.0f,
 					 0.0f, 1.0f,
@@ -40,10 +41,10 @@ TestScreen::TestScreen(void):
 					 0.0f, 1.0f,
 					 1.0f, 0.0f,
 					 1.0f, 1.0f};
-	cube0.vertexAttribTexCoordPointer(false, 0, uvs, 8);
-	cube0.setTexture(&tex);
+	//cube0.vertexAttribTexCoordPointer(false, 0, uvs, 8);
+	//cube0.setTexture(&tex);
 	cube1.vertexAttribTexCoordPointer(false, 0, uvs, 8);
-	cube1.setTexture(&tex);
+	//cube1.setTexture(&tex);
 	cube2.vertexAttribTexCoordPointer(false, 0, uvs, 8);
 	cube2.setTexture(&tex);
 	cube3.vertexAttribTexCoordPointer(false, 0, uvs, 8);
@@ -60,10 +61,10 @@ TestScreen::TestScreen(void):
 
 	cube0.vertexAttribColorPointer(false, 0, colors, 8);
 	cube1.vertexAttribColorPointer(false, 0, colors, 8);
-	cube2.vertexAttribColorPointer(false, 0, colors, 8);
+	//cube2.vertexAttribColorPointer(false, 0, colors, 8);
 	cube3.vertexAttribColorPointer(false, 0, colors, 8);
 
-	update(0);
+	view.cullFace(CCW);
 }
 
 
@@ -144,7 +145,7 @@ void TestScreen::update(double deltaTime){
 
 	GLushort indices[] = { 0, 1, 2, 1, 3, 2,
 						   4, 5, 0, 0, 5, 1,
-						   2, 3, 6, 3, 6, 7,
+						   2, 3, 6, 3, 7, 6,
 						   6, 7, 5, 6, 5, 4,
 						   0, 6, 4, 0, 2, 6,
 						   1, 5, 3, 3, 5, 7 };

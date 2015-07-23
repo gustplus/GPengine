@@ -24,6 +24,8 @@ namespace GPEngine3D{
         T y;
 
         Vector2(T fx = 0, T fy = 0) : x(fx), y(fy){}
+
+        Vector2(const Vector2<T> &from, const Vector2<T> &to) : x(to.x - from.x), y(to.y - from.y){}
         
         ~Vector2(void){}
 
@@ -152,6 +154,8 @@ namespace GPEngine3D{
 	template<class T>
 	bool operator!=(const Vector3<T> &v1, const Vector3<T> &v2);
 
+	template <class T> class Vector4;
+
 	template <class T>
 	class Vector3
 	{
@@ -164,9 +168,11 @@ namespace GPEngine3D{
         T y;
         T z;
         
-        Vector3(T fx = 0, T fy = 0, T fz = 0) : x(fx), y(fy), z(fz){};
+        Vector3(T fx = 0, T fy = 0, T fz = 0) : x(fx), y(fy), z(fz){}
         
-        Vector3(const Vector2<T> &v, T fz = 0) : x(v.x), y(v.y), z(fz){};
+        Vector3(const Vector2<T> &v, T fz = 0) : x(v.x), y(v.y), z(fz){}
+        Vector3(const Vector4<T> &v) : x(v.x), y(v.y), z(v.z){}
+        Vector3(const Vector3<T> &from, const Vector3<T> &to) : x(to.x - from.x), y(to.y - from.y), z(to.z - from.z){}
         
         ~Vector3(void){};
 
