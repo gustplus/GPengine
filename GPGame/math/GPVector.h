@@ -386,7 +386,6 @@ namespace GPEngine3D{
 			x *= value;
 			y *= value;
 			z *= value;
-			w *= value;
 		}
 
 		T dotMul(const Vector4 & vector) const
@@ -396,7 +395,7 @@ namespace GPEngine3D{
 
 		Vector4 operator*(const T value) const
 		{
-			return Vector4(x * value, y * value, z * value, w * value);
+			return Vector4(x * value, y * value, z * value, w);
 		}
 
 		Vector3<T> crossMul(Vector4& vector) const
@@ -484,15 +483,18 @@ namespace GPEngine3D{
 
 	typedef Vector2<float> vec2f;
 	typedef Vector2<int> vec2i;
+	typedef Vector3<float> vec3f;
+	typedef Vector3<int> vec3i;
+	typedef Vector4<float> vec4f;
+	typedef Vector4<int> vec4i;
+
 	typedef Vector2<int> Size;
 	typedef Vector2<int> Point2i;
 	typedef Vector2<float> Point2f;
 	typedef Vector3<float> Bound;
-    typedef Vector3<float> vec3f;
 	typedef Vector3<float> Point3f;
     typedef Vector2<float> Vector2f;
     typedef Vector3<float> Vector3f;
-    typedef Vector4<float> vec4f;
     typedef Vector4<float> Vector4f;
 }
 

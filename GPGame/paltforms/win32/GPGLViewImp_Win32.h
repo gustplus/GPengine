@@ -11,7 +11,7 @@
 #ifndef _USE_SOFTWARE_RENDERER_
 	#include "GPGLRenderer.h"
 #else
-	#include "GPSoftwareRenderer.h"
+	#include "GPSoftwarePipeline.h"
 #endif
 #include <windows.h>
 	

@@ -3,6 +3,7 @@
 
 typedef unsigned char byte;
 typedef unsigned char uchar;
+typedef unsigned char ubyte;
 typedef short int_16;
 typedef unsigned short uint_16;
 typedef int int_32;

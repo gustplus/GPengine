@@ -3,10 +3,11 @@
 //  GPEngine
 //
 //  Created by shizhan on 14/11/8.
-//  Copyright (c) 2014年 ___GUSTPLUS___. All rights reserved.
+//  Copyright (c) 2014 ___GUSTPLUS___. All rights reserved.
 //
 
 #include "GPDirector.h"
+#include "GPkeyHandler.h"
 
 namespace GPEngine3D {
     IMP_SINGLETON(Director);
@@ -43,8 +44,10 @@ namespace GPEngine3D {
 				}
                 _runningScene->update(deltaTime);
                 _runningScene->present();
+                KeyHandler::getInstance()->rollDir = 0;
+                _openglView->swapBuffer();
             }
-            _openglView->swapBuffer();
+            
         }
     }
     

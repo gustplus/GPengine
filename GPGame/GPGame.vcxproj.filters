@@ -198,9 +198,6 @@
     <ClInclude Include="math\gpmath.h">
       <Filter>math</Filter>
     </ClInclude>
-    <ClInclude Include="renderer\Software\GPSoftwareRenderer.h">
-      <Filter>soft_renderer</Filter>
-    </ClInclude>
     <ClInclude Include="paltforms\win32\GPKeyHandler.h">
       <Filter>platforms\win32</Filter>
     </ClInclude>
@@ -229,6 +226,12 @@
       <Filter>renderer</Filter>
     </ClInclude>
     <ClInclude Include="renderer\Software\GPSoftwareTexture.h">
+      <Filter>soft_renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="renderer\Software\GPSoftwarePipeline.h">
+      <Filter>soft_renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="renderer\Software\GPVariable.h">
       <Filter>soft_renderer</Filter>
     </ClInclude>
   </ItemGroup>
@@ -314,9 +317,6 @@
     <ClCompile Include="renderer\GPRenderer.cpp">
       <Filter>renderer</Filter>
     </ClCompile>
-    <ClCompile Include="renderer\Software\GPSoftwareRenderer.cpp">
-      <Filter>soft_renderer</Filter>
-    </ClCompile>
     <ClCompile Include="paltforms\win32\GPKeyHandler.cpp">
       <Filter>platforms\win32</Filter>
     </ClCompile>
@@ -342,6 +342,12 @@
       <Filter>math</Filter>
     </ClCompile>
     <ClCompile Include="renderer\Software\GPSoftwareTexture.cpp">
+      <Filter>soft_renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="renderer\Software\GPSoftwarePipeline.cpp">
+      <Filter>soft_renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="renderer\Software\GPvariable.cpp">
       <Filter>soft_renderer</Filter>
     </ClCompile>
   </ItemGroup>

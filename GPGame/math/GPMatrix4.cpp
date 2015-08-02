@@ -150,7 +150,7 @@ namespace GPEngine3D{
 
        m[12] = 0;
        m[13] = 0;
-       m[14] = -(2 * zFar * zNear) * invNearFar;
+       m[14] = -(twoNear * zFar) * invNearFar;
        m[15] = 0;
     }
     

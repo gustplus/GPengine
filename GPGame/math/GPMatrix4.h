@@ -70,6 +70,8 @@ namespace GPEngine3D{
         };
         
 	};
+
+    typedef Matrix4 mat4;
 }
 
 #endif

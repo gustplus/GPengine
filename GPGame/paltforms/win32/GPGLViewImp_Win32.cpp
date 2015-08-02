@@ -72,8 +72,8 @@ bool GLViewImp::initWithWindow(HWND hWindow)
 	_renderer = new GLRenderer(PixelFormat::RGBA, 16, 8, true, iWidth, iHeight);
 	_bReady = dynamic_cast<GLRenderer *>(_renderer)->initContent(_hWindow);
 #else
-	_renderer = new SoftwareRenderer(PixelFormat::RGBA, 16, 8, true, iWidth, iHeight);
-	_bReady = dynamic_cast<SoftwareRenderer *>(_renderer)->initContent();
+	_renderer = new SoftwarePipeline(PixelFormat::RGBA, 16, 8, true, iWidth, iHeight);
+	_bReady = dynamic_cast<SoftwarePipeline *>(_renderer)->initContent();
 #endif
 	ShowWindow(_hWindow, SW_SHOW);						
 	SetForegroundWindow(_hWindow);	
@@ -232,13 +232,13 @@ LRESULT CALLBACK GLViewImp::handleEvents(HWND hWnd, UINT message, WPARAM wParam,
 			}
 			return 0;
 		}
-	case WM_SYSCOMMAND:                            // ÏµÍ³ÖÐ¶Ï
+	case WM_SYSCOMMAND:                           
 		{
-			switch (wParam)                        // ¼ì²éÏµÍ³µ÷ÓÃ
+			switch (wParam)                       
 			{
-			case SC_SCREENSAVE:                    // ÆÁ±£ÒªÔËÐÐ
-			case SC_MONITORPOWER:                // ÏÔÊ¾Æ÷Òª½øÈë½ÚµçÄ£Ê½
-				return 0;                        // ×èÖ¹·¢Éú
+			case SC_SCREENSAVE:                   
+			case SC_MONITORPOWER:          
+				return 0;                       
 			}
 			break;                             
 		}
@@ -247,7 +247,7 @@ LRESULT CALLBACK GLViewImp::handleEvents(HWND hWnd, UINT message, WPARAM wParam,
 			PostQuitMessage(0);
 			return 0;                            
 		}
-	case WM_KEYDOWN:                            // ÓÐ¼ü°´ÏÂ
+	case WM_KEYDOWN:
 		{
 			KeyHandler::getInstance()->keys[wParam] = true;
 			if ((VK_F1 <= wParam && wParam <= VK_F12)
@@ -262,7 +262,7 @@ LRESULT CALLBACK GLViewImp::handleEvents(HWND hWnd, UINT message, WPARAM wParam,
 			}
 			return 0;
 		}
-	case WM_KEYUP:                                // ÓÐ¼ü·Å¿ª
+	case WM_KEYUP:
 		{
 			KeyHandler::getInstance()->keys[wParam] = false;
 			if ((VK_F1 <= wParam && wParam <= VK_F12)
