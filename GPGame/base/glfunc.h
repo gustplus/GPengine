@@ -17,12 +17,15 @@
 #endif
 
 #ifdef GP_PLATFORM_WIN32
-#include <GL\glew.h>
-#include <GL\GL.h>
-#include <GL\GLU.h>
-#include <GL\glut.h>
+#include <GL/glew.h>
+#include <GL/GL.h>
+#include <GL/GLU.h>
+#include <GL/glut.h>
 #pragma comment(lib, "glew32.lib")
 #endif
+
+#include <iostream>
+#include "stdafx.h"
 
 typedef enum{
     VERTEX_SHADER = GL_VERTEX_SHADER,
@@ -110,5 +113,15 @@ typedef enum{
 
 #define BUFFER_OFFSET_FLOAT(offset) (GLubyte *)NULL + ((offset) * sizeof(float))
 #define BUFFER_OFFSET_BYTE(offset) (GLubyte *)NULL + (offset)
+
+inline void CheckError()
+{
+	GLenum err = glGetError();
+	if(GL_INVALID_ENUM == err || GL_INVALID_INDEX)
+	{
+		std::cout<<"invalid input"<<std::endl;
+		return;
+	}
+}
 
 #endif

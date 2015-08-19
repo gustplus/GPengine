@@ -4,6 +4,7 @@
 #include "GPObject.h"
 #include "GPGLShader.h"
 #include "glfunc.h"
+#include "stdafx.h"
 
 namespace GPEngine3D{
 
@@ -41,6 +42,7 @@ namespace GPEngine3D{
         
         GLShaderPtr _vsh;
         GLShaderPtr _fsh;
+		GLShaderPtr _gsh;
 	};
     DEFINE_SMARTPTR(GLShaderProgram, GLShaderProgramPtr)
 }

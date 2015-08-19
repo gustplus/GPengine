@@ -3,6 +3,7 @@
 #include <string>
 #include "GPCharBuffer.h"
 #include "GPStringStream.h"
+#include "stdafx.h"
 
 namespace GPEngine3D{
 	class FileStream

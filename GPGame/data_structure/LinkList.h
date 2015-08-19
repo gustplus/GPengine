@@ -4,6 +4,7 @@
 #include "list.h"
 #include "gp.h"
 #include <iostream>
+#include "stdafx.h"
 
 namespace GPEngine3D{
 	template<class T>

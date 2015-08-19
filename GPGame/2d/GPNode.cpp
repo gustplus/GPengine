@@ -1,12 +1,5 @@
-//
-//  GPNode.cpp
-//  GPEngine
-//
-//  Created by shizhan on 14/11/2.
-//  Copyright (c) 2014年 ___GUSTPLUS___. All rights reserved.
-//
-
 #include "GPNode.h"
+#include "stdafx.h"
 
 namespace GPEngine3D {
     Node::Node(float x = 0, float y = 0):

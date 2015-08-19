@@ -1,6 +1,8 @@
 #ifndef _COLOR_RGBA_H_
 #define _COLOR_RGBA_H_
 
+#include "stdafx.h"
+
 namespace GPEngine3D{
 class ColorRGBA
 {

@@ -1,17 +1,10 @@
-//
-//  GPElementBuffer.h
-//  GPEngine
-//
-//  Created by shizhan on 14-10-5.
-//  Copyright (c) 2014年 ___GUSTPLUS___. All rights reserved.
-//
-
 #ifndef __GPEngine__GPElementBuffer__
 #define __GPEngine__GPElementBuffer__
 
 #include "gp.h"
 #include "glfunc.h"
 #include "types.h"
+#include "stdafx.h"
 /*
  *you can use VertexBuffer to store vertex data, include vertex position, colors, and user defined datas
  *

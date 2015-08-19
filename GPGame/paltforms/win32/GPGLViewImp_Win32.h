@@ -7,6 +7,7 @@
 #include "GPVector.h"
 #include "GPSmartPtr.h"
 #include "GPRect.h"
+#include "stdafx.h"
 
 #ifndef _USE_SOFTWARE_RENDERER_
 	#include "GPGLRenderer.h"

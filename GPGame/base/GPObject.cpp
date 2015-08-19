@@ -6,13 +6,13 @@ using namespace GPEngine3D;
 
 Object::~Object(void)
 {
-//	release();
+
 }
 
 void Object::release()
 {
 	--use;
-    printf("count %d\n", use);
+   // printf("count %d\n", use);
     if(use<1)
     {
         printf("delete\n");
@@ -24,5 +24,5 @@ void Object::release()
 void Object::retain()
 {
 	++use;
-    printf("count %d\n", use);
+    //printf("count %d\n", use);
 }

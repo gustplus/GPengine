@@ -71,6 +71,17 @@ bool GLViewImp::initWithWindow(HWND hWindow)
 #ifndef _USE_SOFTWARE_RENDERER_
 	_renderer = new GLRenderer(PixelFormat::RGBA, 16, 8, true, iWidth, iHeight);
 	_bReady = dynamic_cast<GLRenderer *>(_renderer)->initContent(_hWindow);
+
+	printf("***************************GL RENDER INFOS***************************\n");
+    printf("Verdor: %s\n", glGetString (GL_VENDOR));
+    printf("Renderer: %s\n", glGetString (GL_RENDERER));
+    printf("GL Version: %s\n", glGetString (GL_VERSION));
+    printf("glsl version: %s\n", glGetString(GL_SHADING_LANGUAGE_VERSION));
+	GLint maxNum = 0;
+	glGetIntegerv(GL_MAX_GEOMETRY_OUTPUT_VERTICES, &maxNum);
+	printf( "GLSL Max Geometry output vertices %d\n", maxNum);
+
+	printf("*********************************************************************\n");
 #else
 	_renderer = new SoftwarePipeline(PixelFormat::RGBA, 16, 8, true, iWidth, iHeight);
 	_bReady = dynamic_cast<SoftwarePipeline *>(_renderer)->initContent();
@@ -79,9 +90,6 @@ bool GLViewImp::initWithWindow(HWND hWindow)
 	SetForegroundWindow(_hWindow);	
 	UpdateWindow(_hWindow);
 	SetFocus(_hWindow);
-
-	 const GLubyte *version = glGetString(GL_SHADING_LANGUAGE_VERSION);
-     printf("glsl version: %s\n", version);
 
 	return true;
 }

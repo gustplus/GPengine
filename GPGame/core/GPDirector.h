@@ -1,11 +1,3 @@
-//
-//  GPDirector.h
-//  GPEngine
-//
-//  Created by shizhan on 14/11/8.
-//  Copyright (c) 2014年 ___GUSTPLUS___. All rights reserved.
-//
-
 #ifndef __GPEngine__GPDirector__
 #define __GPEngine__GPDirector__
 
@@ -14,6 +6,7 @@
 #include "gp.h"
 #include "GPGLView.h"
 #include "GPScreen.h"
+#include "stdafx.h"
 
 namespace GPEngine3D {
     class Director

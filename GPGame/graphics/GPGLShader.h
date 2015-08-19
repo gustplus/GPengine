@@ -5,6 +5,7 @@
 #include "glfunc.h"
 #include "GPObject.h"
 #include <iostream>
+#include "stdafx.h"
 
 namespace GPEngine3D{
 

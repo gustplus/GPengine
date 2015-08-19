@@ -3,10 +3,11 @@
 
 #include <math.h>
 #include "types.h"
+#include "stdafx.h"
 
-#define PI 3.14159f;
-#define TO_RADIANS ((1 / 180f) * (float) PI)
-#define TO_DEGREES ((1 / (float) PI) * 180)
+const float PI = 3.14159f;
+#define TO_RADIANS (PI / 180.0f)
+#define TO_DEGREES (180.0f / PI)
 namespace GPEngine3D{
 	class Math{
 	public:

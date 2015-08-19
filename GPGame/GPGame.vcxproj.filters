@@ -55,17 +55,14 @@
     <Filter Include="platforms\win32">
       <UniqueIdentifier>{39f20b1a-972f-47d7-81ab-f631a1f7b715}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Samples">
+      <UniqueIdentifier>{6ef5b2d7-f88b-4c43-94c4-4808a21c6815}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Resource.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="TestScreen.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="base\glfunc.h">
       <Filter>base</Filter>
     </ClInclude>
@@ -234,11 +231,23 @@
     <ClInclude Include="renderer\Software\GPVariable.h">
       <Filter>soft_renderer</Filter>
     </ClInclude>
+    <ClInclude Include="Samples\GLFilterScreen.h">
+      <Filter>Samples</Filter>
+    </ClInclude>
+    <ClInclude Include="Samples\GLGemotryShaderScene.h">
+      <Filter>Samples</Filter>
+    </ClInclude>
+    <ClInclude Include="Samples\GLSkyBoxScreen.h">
+      <Filter>Samples</Filter>
+    </ClInclude>
+    <ClInclude Include="Samples\GLWaveScreen.h">
+      <Filter>Samples</Filter>
+    </ClInclude>
+    <ClInclude Include="Samples\SoftwareRendererScreen.h">
+      <Filter>Samples</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="TestScreen.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="base\GPObject.cpp">
       <Filter>base</Filter>
     </ClCompile>
@@ -349,6 +358,21 @@
     </ClCompile>
     <ClCompile Include="renderer\Software\GPvariable.cpp">
       <Filter>soft_renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="Samples\GLFilterScreen.cpp">
+      <Filter>Samples</Filter>
+    </ClCompile>
+    <ClCompile Include="Samples\GLGemotryShaderScene.cpp">
+      <Filter>Samples</Filter>
+    </ClCompile>
+    <ClCompile Include="Samples\GLSkyBoxScreen.cpp">
+      <Filter>Samples</Filter>
+    </ClCompile>
+    <ClCompile Include="Samples\GLWaveScreen.cpp">
+      <Filter>Samples</Filter>
+    </ClCompile>
+    <ClCompile Include="Samples\SoftwareRendererScreen.cpp">
+      <Filter>Samples</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

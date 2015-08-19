@@ -16,6 +16,11 @@ namespace GPEngine3D {
     FileUtil::FileUtil():searchPaths(std::set<std::string>()), rootPath("")
     {
         searchPaths.insert(rootPath);
+		TCHAR szPath[MAX_PATH];
+		if( GetModuleFileName( NULL, szPath, MAX_PATH ) )
+		{
+			 printf("GetModuleFileName failed %s\n", szPath);
+		}
     }
     
     FileUtil::~FileUtil(){

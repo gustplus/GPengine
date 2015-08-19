@@ -1,11 +1,3 @@
-//
-//  GPImage.h
-//  GPEngine
-//
-//  Created by shizhan on 14-9-14.
-//  Copyright (c) 2014年 ___GUSTPLUS___. All rights reserved.
-//
-
 #ifndef __GPEngine__GPImage__
 #define __GPEngine__GPImage__
 
@@ -13,6 +5,7 @@
 #include "gp.h"
 #include "GPSmartPtr.h"
 #include "types.h"
+#include "stdafx.h"
 
 namespace GPEngine3D{
     enum ImageFormat{

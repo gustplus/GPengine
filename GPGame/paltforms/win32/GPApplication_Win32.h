@@ -8,6 +8,7 @@
 #include "GPScreen.h"
 #include "GPApplicationProtocol.h"
 #include "GPGLViewImp_Win32.h"
+#include "stdafx.h"
 
 #include <time.h>
 

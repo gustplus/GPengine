@@ -3,6 +3,7 @@
 
 #include "GPVector.h"
 #include "gpmath.h"
+#include "stdafx.h"
 
 namespace GPEngine3D{
     enum class AXIS{
@@ -14,7 +15,7 @@ namespace GPEngine3D{
 	class Matrix4
 	{   
 	public:
-        friend Matrix4 &operator*=(Matrix4 &mat0, const Matrix4 &mat1);
+        friend Matrix4 operator*(const Matrix4 &mat0, const Matrix4 &mat1);
         
 		Matrix4(void);
         Matrix4(const Matrix4 &);

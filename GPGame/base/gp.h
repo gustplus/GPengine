@@ -1,6 +1,7 @@
 #ifndef _GP_H_
 #define _GP_H_
 
+#include "stdafx.h"
 #include "GPSmartPtr.h"
 #include <assert.h>
 

@@ -1,11 +1,3 @@
-//
-//  GPFileUtil.h
-//  GPEngine
-//
-//  Created by shizhan on 14-9-14.
-//  Copyright (c) 2014年 ___GUSTPLUS___. All rights reserved.
-//
-
 #ifndef __GPEngine__GPFIleUtil__
 #define __GPEngine__GPFIleUtil__
 
@@ -13,6 +5,7 @@
 #include <set>
 
 #include "gp.h"
+#include "stdafx.h"
 
 namespace GPEngine3D {
     class FileUtil

@@ -3,6 +3,7 @@
 
 #include "gpobject.h"
 #include "GPVector.h"
+#include "stdafx.h"
 #include "GPmatrix4.h"
 
 namespace GPEngine3D{

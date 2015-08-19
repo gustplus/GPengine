@@ -2,6 +2,7 @@
 #define _SMARTPTR_
 
 #include "GPObject.h"
+#include "stdafx.h"
 #include <assert.h>
 #include <cstdio>
 
@@ -69,7 +70,7 @@ namespace GPEngine3D
     template <class T>
     SmartPtr<T> &SmartPtr<T>::operator= (const SmartPtr<T>& obj)
     {
-        printf(" = operator \n");
+        //printf(" = operator \n");
         if(obj.ptr)
         {
             if(ptr != obj.ptr){
@@ -99,7 +100,7 @@ namespace GPEngine3D
     SmartPtr<T> &SmartPtr<T>::operator= (T* obj)
     {
 //        assert(dynamic_cast<Object *>(obj));
-        printf(" = ptr : %d\n", obj);
+       // printf(" = ptr : %d\n", obj);
         if(obj)
         {
             if(ptr != obj){

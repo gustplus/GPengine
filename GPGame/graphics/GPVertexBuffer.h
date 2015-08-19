@@ -22,7 +22,7 @@ namespace GPEngine3D
         _isDynamic(isDynamic),
         _nums_per_vertex(num_per_vertex),
         _byte_per_data_cell(byte_per_data_cell),
-        _location(0){}
+        _location(-1){}
         
         virtual ~VertexBufferBase(){
             if (_VBO != 0){
@@ -39,18 +39,13 @@ namespace GPEngine3D
         
         virtual bool bind()
         {
-#ifdef GLES3
-			if (_VAO != 0){
-				glBindVertexArray(_VAO);
-				return true;
-			}
-#else
 			if(_VBO != 0)
 			{
 				glBindBuffer(GL_ARRAY_BUFFER, _VBO);
+				glVertexAttribPointer(_location, _num, _dataType, false, 0, BUFFER_OFFSET_BYTE(0));
+				glEnableVertexAttribArray(_location);
 				return true;
 			}
-#endif
             return false;
         }
         
@@ -64,8 +59,7 @@ namespace GPEngine3D
         int _nums_per_vertex;
         DATATYPE _dataType;
         GLuint _VBO;
-		GLuint _VAO;
-        int _location;
+        GLint _location;
         
         byte _byte_per_data_cell;
         bool _isDynamic;
@@ -89,12 +83,6 @@ namespace GPEngine3D
         
 		virtual ~VertexBuffer(void)
         {
-#ifdef GLES3
-        if(_VAO != 0)
-        {
-            glDeleteVertexArrays(1, &_VAO);
-        }
-#endif
         if (_VBO != 0){
             glDeleteBuffers(1, &_VBO);
         }
@@ -102,10 +90,6 @@ namespace GPEngine3D
 
 		bool genArrayBuffer(const T *vertices)
         {
-#ifdef GLES3
-			glGenVertexArrays(1, &_VAO);
-			glBindVertexArray(_VAO);
-#endif
 			glGenBuffers(1, &_VBO);
 			if(_VBO == 0)
 			{
@@ -114,10 +98,8 @@ namespace GPEngine3D
         
 			glBindBuffer(GL_ARRAY_BUFFER, _VBO);
 			glBufferData(GL_ARRAY_BUFFER, _num * _byte_per_data_cell, vertices, _isDynamic ? VBO_DYNAMIC_TYPE : VBO_STATIC_TYPE);
-#ifndef GLES3
 			glBindBuffer(GL_ARRAY_BUFFER, 0);
-			glBindVertexArray(0);
-#endif
+
 			_isDirty = true;
 			return true;
         }
@@ -153,7 +135,7 @@ namespace GPEngine3D
                 printf("length is invalid at %s, %d", __FILE__, __LINE__);
             }
             this->bind();
-            glBufferSubData(GL_ARRAY_BUFFER, startIndex * _byte_per_data_cell * _byte_per_data_cell, length * _byte_per_data_cell, data);
+            glBufferSubData(GL_ARRAY_BUFFER, startIndex * _nums_per_vertex * _byte_per_data_cell, length * _byte_per_data_cell, data);
         }
         
 #ifdef GLES3

@@ -1,6 +1,8 @@
 #ifndef _TYPES_H_
 #define _TYPES_H_
 
+#include "stdafx.h"
+
 typedef unsigned char byte;
 typedef unsigned char uchar;
 typedef unsigned char ubyte;

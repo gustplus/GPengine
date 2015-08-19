@@ -1,10 +1,10 @@
 #ifndef _SPATIAL_
 #define _SPATIAL_
 
+#include "stdafx.h"
 #include "gpobject.h"
 #include "GPTransform.h"
 #include "GPSmartPtr.h"
-//#include "GPSmartPtr.cpp"
 
 namespace GPEngine3D{
 	class Spatial :

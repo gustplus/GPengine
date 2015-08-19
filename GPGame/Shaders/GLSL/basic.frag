@@ -1,2 +1,9 @@
-^ /}D?+3Õø´¤ÕD?|XÏT@eüYH3¾<€§ˆƒ_¨€§ˆ>,£È
-xY@dÊıD?ª%`ÂÊ¢ VRæz¢Ÿ V,W=—òùH3›x_ÍØÏæö‰Íìnó†¿ÿş×Ê@ëÜ®®~
+#version 330
+
+in vec2 vTextureCoord;
+uniform sampler2D sTexture;
+void main()                         
+{                      
+   gl_FragColor =  texture2D(sTexture, vTextureCoord);
+   //gl_FragColor =  vec4(0.5f);
+}              

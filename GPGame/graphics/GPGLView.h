@@ -1,17 +1,10 @@
-//
-//  GPGLView.h
-//  GPEngine
-//
-//  Created by shizhan on 14/11/8.
-//  Copyright (c) 2014年 ___GUSTPLUS___. All rights reserved.
-//
-
 #ifndef __GPEngine__GPGLView__
 #define __GPEngine__GPGLView__
 
 #include <stdio.h>
 #include "GPRect.h"
 #include "GPObject.h"
+#include "stdafx.h"
 
 namespace GPEngine3D
 {

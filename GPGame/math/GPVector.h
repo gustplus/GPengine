@@ -2,6 +2,7 @@
 #define _VECTOR_H_
 
 #include <iostream>
+#include "stdafx.h"
 
 namespace GPEngine3D{
 	template<class T> class Vector2;

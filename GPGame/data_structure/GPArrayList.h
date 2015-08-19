@@ -1,11 +1,3 @@
-//
-//  GPVector.h
-//  GPEngine
-//
-//  Created by shizhan on 14/11/16.
-//  Copyright (c) 2014年 ___GUSTPLUS___. All rights reserved.
-//
-
 #ifndef __GPEngine__GPVector__
 #define __GPEngine__GPVector__
 
@@ -14,6 +6,7 @@
 #include "gp.h"
 #include <functional>
 #include <algorithm> // for std::find
+#include "stdafx.h"
 
 
 namespace GPEngine3D {

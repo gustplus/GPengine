@@ -1,7 +1,8 @@
-#ifndef __LIST__
-#define __LIST__
+#ifndef __LIST_H__
+#define __LIST_H__
 
 #include "types.h"
+#include "stdafx.h"
 
 namespace GPEngine3D{
 	template<class T>

@@ -1,6 +1,8 @@
 #ifndef _OBJECT_H_
 #define _OBJECT_H_
 
+#include "stdafx.h"
+
 namespace GPEngine3D{
 	class Object
 	{

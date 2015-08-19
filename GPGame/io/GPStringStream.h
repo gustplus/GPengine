@@ -1,6 +1,8 @@
-#pragma once
+#ifndef __STRINGSTREAM_H__
+#define __STRINGSTREAM_H__
 
 #include <string>
+#include "stdafx.h"
 
 namespace GPEngine3D{
 
@@ -34,3 +36,5 @@ namespace GPEngine3D{
 	char *ReplaceAll(char*src, const char *old, const char *newV);
 	char *Replace(char*src, const char *old, const char *newV);
 }
+
+#endif

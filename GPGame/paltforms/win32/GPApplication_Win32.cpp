@@ -5,25 +5,14 @@
 #include <vector>
 #include <iostream>
 
-#include "GPFileStream.h"
-#include "GPStringStream.h"
-#include "GPGLShaderProgram.h"
-#include "GPGLShader.h"
-#include "ObjLoader.h"
-#include "TestScreen.h"
-#include "GPColorRGBA.h"
 #include "gp.h"
 #include "ArrayList.h"
 #include "GPApplication_Win32.h"
-#include "GPKeyHandler.h"
-#include "GPVector.h"
 #include "GPDirector.h"
 
 #ifdef  GP_PLATFORM_WIN32
 #pragma warning(disable:4996)//关闭freopen方法不安全的警告
 #endif
-
-#define _DEBUG_
 
 US_NS_GP;
 
@@ -85,7 +74,7 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 					   _In_ LPTSTR    lpCmdLine,
 					   _In_ int       nCmdShow)
 {
-#ifdef _DEBUG_
+#ifdef _DEBUG
 	AllocConsole();
 	freopen("CONOUT$", "w", stdout);
 #endif

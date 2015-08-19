@@ -5,7 +5,9 @@ namespace GPEngine3D{
 		_minFilter(SampleFilter::NEAREST),
 		_magFilter(SampleFilter::NEAREST),
 		_bytesPerColor(3),
-		_mipmapLevel(0)
+		_mipmapLevel(0),
+		_width(0),
+		_height(0)
 		{
 
 		};
@@ -117,6 +119,8 @@ namespace GPEngine3D{
 
 		_img = GP_NEW Image();
 		_img->initWithBytes(bytes, width, height);
+		_width = width;
+		_height = height;
 		_mipmapLevel = 0;
 	}
 

@@ -1,10 +1,12 @@
-#pragma once
+#ifndef _OBJLOADER_H__
+#define _OBJLOADER_H__
 
 #include "GPVertexBuffer.h"
 #include <string>
 #include <vector>
 #include "gpmath.h"
 #include "GPVector.h"
+#include "stdafx.h"
 
 namespace GPEngine3D
 {
@@ -27,3 +29,5 @@ namespace GPEngine3D
 		static void LoadWithStride(std::vector<Point3f> &, int stride);
 	};
 }
+
+#endif

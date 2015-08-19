@@ -1,11 +1,3 @@
-//
-//  GPOpenGLStateManager.h
-//  GPEngine
-//
-//  Created by shizhan on 14-10-1.
-//  Copyright (c) 2014年 ___GUSTPLUS___. All rights reserved.
-//
-
 #ifndef __GPEngine__GPOpenGLStateManager__
 #define __GPEngine__GPOpenGLStateManager__
 
@@ -14,6 +6,7 @@
 #include "glfunc.h"
 #include "GPRect.h"
 #include "types.h"
+#include "stdafx.h"
 
 namespace GPEngine3D {
     class OpenGLStateManager{

@@ -8,6 +8,7 @@
 #include "glfunc.h"
 #include "GPMatrix4.h"
 #include "GPSoftwareTexture.h"
+#include "stdafx.h"
 
 #define CCW  1
 #define CW  -1

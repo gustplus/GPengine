@@ -2,6 +2,7 @@
 #define _TIMER_H_
 
 #include <time.h>
+#include "stdafx.h"
 
 typedef clock_t time_type;
 

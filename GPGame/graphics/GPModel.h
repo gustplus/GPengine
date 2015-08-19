@@ -1,11 +1,3 @@
-//
-//  GPModel.h
-//  GPEngine
-//
-//  Created by shizhan on 14-10-5.
-//  Copyright (c) 2014年 ___GUSTPLUS___. All rights reserved.
-//
-
 #ifndef __GPEngine__GPModel__
 #define __GPEngine__GPModel__
 
@@ -19,6 +11,7 @@
 #include "GPElementBuffer.h"
 #include "GPGLShaderProgram.h"
 #include "glfunc.h"
+#include "stdafx.h"
 
 namespace GPEngine3D {
     class Model : public Object

@@ -1,9 +1,10 @@
-#ifndef _ARRAYLIST_
-#define _ARRAYLIST_
+#ifndef __ARRAYLIST_H__
+#define __ARRAYLIST_H__
 
 #include "list.h"
 #include "gp.h"
 #include <iostream>
+#include "stdafx.h"
 
 namespace GPEngine3D{
 	template<class T>

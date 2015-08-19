@@ -3,6 +3,7 @@
 
 #include "GPImage.h"
 #include "gpmath.h"
+#include "stdafx.h"
 
 namespace GPEngine3D {
 	enum class SampleFilter
@@ -34,12 +35,14 @@ namespace GPEngine3D {
 			return _mipmapLevel;
 		}
 
-		// virtual int getWidth() = 0;
-		// virtual int getHeight() = 0;
+		int getWidth() const {return _width;}
+		int getHeight()const {return _height;}
 		
 	protected:
 		int _mipmapLevel;
 		uint_32 _bytesPerColor;
+		int _width;
+		int _height;
 	private:
 		SampleFilter _minFilter;
 		SampleFilter _magFilter;

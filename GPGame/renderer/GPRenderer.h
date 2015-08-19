@@ -5,6 +5,7 @@
 #include "GPColorRGBA.h"
 #include "GPRenderStructures.h"
 #include "types.h"
+#include "stdafx.h"
 //#include "GPSystem.h"
 
 namespace GPEngine3D{

@@ -1,8 +1,8 @@
 #include "stdafx.h"
 #include "GPGLShader.h"
 #include <iostream>
-#include "GPStringStream.h"
-#include "GPFileStream.h"
+#include <fstream>
+#include <string>
 
 namespace GPEngine3D{
     
@@ -25,12 +25,15 @@ namespace GPEngine3D{
     
     bool GLShader::loadFromFile(const char* fileName)
     {
-        FileStream file;
-        StringStream arr;
-        file.Open(fileName);
-        file.LoadToArray(arr);
-        
-        const char *source = ReplaceAll(arr.GetString(), "\r\n", "\n");
+		std::ifstream file(fileName);
+		std::string src = "";
+		std::string tmpStr;
+		while (getline(file, tmpStr))
+		{
+			src.append("\n" + tmpStr);
+		}
+		file.close();
+        const char *source = src.c_str();
         bool ret = init(source);
         if (ret){
             std::cout<<"load shader "<<fileName<<" success"<<std::endl;
@@ -65,8 +68,8 @@ namespace GPEngine3D{
         glCompileShader(_shaderID);
         glGetShaderiv(_shaderID, GL_COMPILE_STATUS, &ret);
         if (!ret){
-            GLchar *log = (GLchar *)malloc(ret);
             glGetShaderiv(_shaderID, GL_INFO_LOG_LENGTH, &ret);
+			GLchar *log = (GLchar *)malloc(ret);
             glGetShaderInfoLog(_shaderID, ret, &ret, log);
             std::cout<<log<<std::endl;
             free(log);

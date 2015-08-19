@@ -3,6 +3,7 @@
 
 #include <cstdio>
 #include "gp.h"
+#include "stdafx.h"
 #include <string.h>
 
 namespace GPEngine3D{

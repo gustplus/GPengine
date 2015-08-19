@@ -1,6 +1,8 @@
-#ifndef _SCREEN_H_
-#define _SCREEN_H_
+#ifndef __SCREEN_H__
+#define __SCREEN_H__
+
 #include "GPObject.h"
+#include "stdafx.h"
 
 namespace GPEngine3D{
 	class Screen :

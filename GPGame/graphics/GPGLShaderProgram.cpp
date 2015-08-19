@@ -50,6 +50,10 @@ bool GLShaderProgram::attachShader(const GLShaderPtr &shader)
     {
         _fsh = shader;
     }
+	if(shader->getType() == ShaderType::GEOMETRY_SHADER)
+	{
+		_gsh = shader;
+	}
 	return true;
 }
 

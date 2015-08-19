@@ -1,5 +1,6 @@
 #ifndef _GLRENDER_H_
 #define _GLRENDER_H_
+#include "stdafx.h"
 #include "gprenderer.h"
 #include <windows.h>
 

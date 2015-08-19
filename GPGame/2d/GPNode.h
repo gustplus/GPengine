@@ -1,15 +1,8 @@
-//
-//  GPNode.h
-//  GPEngine
-//
-//  Created by shizhan on 14/11/2.
-//  Copyright (c) 2014年 ___GUSTPLUS___. All rights reserved.
-//
-
 #ifndef __GPEngine__GPNode__
 #define __GPEngine__GPNode__
 
 #include <stdio.h>
+#include "stdafx.h"
 #include "GPObject.h"
 #include "GPVector.h"
 #include "GPTransform.h"
@@ -231,13 +224,13 @@ namespace GPEngine3D{
             }
         }
         
-        unsigned int _depth;              //处于场景树的深度
+        unsigned int _depth;     //depth in teh scene graph
         vec2f _position;
         vec2f _worldPosition;
         vec2f _anthorPoint;
         
-        Rect _contentBound;      //包含子节点的包围盒
-        Rect _selfBound;         //自己的包围盒
+        Rect _contentBound;      //bounding box contains all children
+        Rect _selfBound;         //bounding box
         
         float _scaleX;
         float _scaleY;

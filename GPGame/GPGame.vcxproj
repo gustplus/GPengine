@@ -42,9 +42,13 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
+    <IncludePath>$(IncludePath)</IncludePath>
+    <LibraryPath>$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
+    <IncludePath>$(IncludePath)</IncludePath>
+    <LibraryPath>$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -54,29 +58,32 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions);GP_PLATFORM_WIN32</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <PrecompiledHeaderFile />
-      <AdditionalIncludeDirectories>GPGame;paltforms\win32;renderer\Software;renderer;2d;utils;system;math;io;graphics;data_structure;core;base;3d;./;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>Samples;paltforms\win32;renderer\Software;renderer;2d;utils;system;math;io;graphics;data_structure;core;base;3d;./</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>opengl32.lib;glu32.lib;glut32.lib;glew32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
-      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;%(PreprocessorDefinitions);GP_PLATFORM_WIN32</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>GPGame;paltforms\win32;renderer\Software;renderer;2d;utils;system;math;io;graphics;data_structure;core;base;3d;./;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -136,10 +143,13 @@
     <ClInclude Include="renderer\Software\GPSoftwarePipeline.h" />
     <ClInclude Include="renderer\Software\GPSoftwareTexture.h" />
     <ClInclude Include="renderer\Software\GPVariable.h" />
-    <ClInclude Include="Resource.h" />
+    <ClInclude Include="Samples\GLFilterScreen.h" />
+    <ClInclude Include="Samples\GLGemotryShaderScene.h" />
+    <ClInclude Include="Samples\GLSkyBoxScreen.h" />
+    <ClInclude Include="Samples\GLWaveScreen.h" />
+    <ClInclude Include="Samples\SoftwareRendererScreen.h" />
     <ClInclude Include="system\GPOpenGLStateManager.h" />
     <ClInclude Include="system\GPSystem.h" />
-    <ClInclude Include="TestScreen.h" />
     <ClInclude Include="utils\GPLogger.h" />
   </ItemGroup>
   <ItemGroup>
@@ -178,8 +188,12 @@
     <ClCompile Include="renderer\Software\GPSoftwarePipeline.cpp" />
     <ClCompile Include="renderer\Software\GPSoftwareTexture.cpp" />
     <ClCompile Include="renderer\Software\GPvariable.cpp" />
+    <ClCompile Include="Samples\GLFilterScreen.cpp" />
+    <ClCompile Include="Samples\GLGemotryShaderScene.cpp" />
+    <ClCompile Include="Samples\GLSkyBoxScreen.cpp" />
+    <ClCompile Include="Samples\GLWaveScreen.cpp" />
+    <ClCompile Include="Samples\SoftwareRendererScreen.cpp" />
     <ClCompile Include="system\GPOpenGLStateManager.cpp" />
-    <ClCompile Include="TestScreen.cpp" />
     <ClCompile Include="utils\GPLogger.cpp" />
   </ItemGroup>
   <ItemGroup>

@@ -1,5 +1,7 @@
-#pragma once
+#ifndef __KEYHANDLER_H__
+#define __KEYHANDLER_H__
 #include "gpobject.h"
+#include "stdafx.h"
 
 namespace GPEngine3D{
 
@@ -58,8 +60,8 @@ namespace GPEngine3D{
 		const static int KEY_ENTER = 0x0D;
 		const static int KEY_RETURN = 0x0D;
 
-		const static int KEY_SHIFT = 0x0004;
-		const static int KEY_CONTROL = 0x0008;
+		const static int KEY_SHIFT = 0x0010;
+		const static int KEY_CONTROL = 0x0020;
 		const static int KEY_ALT = 0;      // not currently handled
 		const static int KEY_COMMAND = 0;  // not currently handled
 
@@ -73,7 +75,8 @@ namespace GPEngine3D{
 		const static int MODIFIER_LBUTTON = 0x0001;
 		const static int MODIFIER_MBUTTON = 0x0010;
 		const static int MODIFIER_RBUTTON = 0x0002;
-		const static int MODIFIER_SHIFT = 0x0004;
+		const static int MODIFIER_SHIFT = 0x0010;
 	};
 }
 
+#endif
