@@ -19,6 +19,7 @@
 #define LENGTH(A)                            (sizeof(A)/sizeof(A[0]))
 
 #define DISARROW_COPY_AND_ASSIGN(classname) \
+private:\
 classname(const classname &);\
 void operator=(const classname &);
 
@@ -60,7 +61,7 @@ if (!ops){\
 assert(ops)
 
 
-#define isInstanceOf(class, obj) (dynamic_cast<class>(obj) == nullptr)
+#define isInstanceOf(class, obj) (dynamic_cast<class>(obj) != nullptr)
 
 template<class T>
 inline void swap(T &a, T &b)

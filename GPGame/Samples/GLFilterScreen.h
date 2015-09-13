@@ -24,7 +24,7 @@ private:
 
 	GLuint tex;
 
-	GLuint posHandle, powerHandle;
+	GLuint posHandle, powerHandle, kernelHandle;
 
 	GPEngine3D::GLShaderProgram program;
 };

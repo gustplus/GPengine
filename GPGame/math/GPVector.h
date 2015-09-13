@@ -102,7 +102,7 @@ namespace GPEngine3D{
 			return sqrtf(x*x+y*y);
 		}
 
-		Vector2 normalize() const
+		Vector2 normalize()
 		{
 			float length = len();
 			if(length>0)
@@ -233,7 +233,7 @@ namespace GPEngine3D{
 			return Vector3(x*value, y*value, z*value);
 		}
 
-		Vector3 crossMul(Vector3& vector) const
+		Vector3 crossMul(const Vector3& vector) const
 		{
 			return Vector3(y*vector.z-z*vector.y,
 				z*vector.x-x*vector.z,
@@ -262,7 +262,7 @@ namespace GPEngine3D{
 			return sqrtf(x*x+y*y+z*z);
 		}
 
-		Vector3 normalize() const
+		Vector3 normalize()
 		{
 			float length = len();
 			if(length>0)
@@ -275,7 +275,7 @@ namespace GPEngine3D{
 			return *this;
 		}
 
-		float dist(Vector3 vector) const
+		float dist(const Vector3 vector) const
 		{
 			float distX = x - vector.x;
 			float distY = y - vector.y;
@@ -283,7 +283,7 @@ namespace GPEngine3D{
 			return sqrt(distX * distX + distY * distY + distZ * distZ);
 		}
 
-		T distSquared(Vector3 vector) const
+		T distSquared(const Vector3 vector) const
 		{
 			float distX = x - vector.x;
 			float distY = y - vector.y;
@@ -399,7 +399,7 @@ namespace GPEngine3D{
 			return Vector4(x * value, y * value, z * value, w);
 		}
 
-		Vector3<T> crossMul(Vector4& vector) const
+		Vector3<T> crossMul(const Vector4& vector) const
 		{
 			return Vector3<T>(y*vector.z - z*vector.y,
 						   z*vector.x - x*vector.z,
@@ -480,6 +480,15 @@ namespace GPEngine3D{
     {
         return v1.x != v2.x || v1.y != v2.y || v1.z != v2.z || v1.w != v2.w;
     }
+
+	template <typename T>
+	inline Vector3<T> reflect(const Vector3<T> &normal, const Vector3<T> &dir)
+	{
+		Vector3<T> unitNormal = normal;
+		unitNormal.normalize();
+		Vector3<T> vInNormal = unitNormal * dir.dotMul(unitNormal);
+		return vInNormal - dir + vInNormal;
+	}
 
 
 	typedef Vector2<float> vec2f;

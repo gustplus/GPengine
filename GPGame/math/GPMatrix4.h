@@ -32,6 +32,7 @@ namespace GPEngine3D{
         void setTranslation(const Vector3f &movement);
         
         void setScale(const Vector3f &scale);
+        void setScale(float x, float y, float z);
         
         void orthf(float left, float right, float bottom, float top, float zNear, float ZFar);
         
@@ -56,17 +57,17 @@ namespace GPEngine3D{
             float m[16];
             struct
             {
-                Point3f xAxis;
-                float z0;
-                Point3f yAxis;
-                float z1;
-                Point3f zAxis;
-                float z2;
+                vec3f xAxis;
+                float w0;
+                vec3f yAxis;
+                float w1;
+                vec3f zAxis;
+                float w2;
 
                 float tx;
                 float ty;
                 float tz;
-                float z3;
+                float w3;
             };    
         };
         

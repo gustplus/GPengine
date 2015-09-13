@@ -7,6 +7,7 @@
 #include "GLGemotryShaderScene.h"
 #include "GLFilterScreen.h"
 #include "GLSkyBoxScreen.h"
+#include "GLLightScreen.h"
 
 US_NS_GP;
 
@@ -23,9 +24,10 @@ bool AppDelegate::applicationDidFinishLaunching()
 
 	//director->runWithScene(new SoftwareRendererScreen());
 	//director->runWithScene(new GLGemotryShaderScene());
-	//director->runWithScene(new GLTestScreen());
+	//director->runWithScene(new GLWaveScreen());
 	//director->runWithScene(new GLFilterScreen());
-	director->runWithScene(new GLSkyBoxScreen());
+	//director->runWithScene(new GLSkyBoxScreen());
+	director->runWithScene(new GLLightScreen());
 	return true;
 }
 

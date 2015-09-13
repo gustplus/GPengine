@@ -88,28 +88,33 @@ namespace GPEngine3D{
         m[14] = movement.z;
         m[15] = 1;
     }
-    
-    void Matrix4::setScale(const Vector3f &scale)
+
+    void Matrix4::setScale(float x, float y, float z)
     {
-        m[0] = scale.x;
+        m[0] = x;
         m[1] = 0;
         m[2] = 0;
         m[3] = 0;
 
         m[4] = 0;
-        m[5] = scale.y;
+        m[5] = y;
         m[6] = 0;
         m[7] = 0;
 
         m[8] = 0; 
         m[9] = 0; 
-        m[10] = scale.z;
+        m[10] = z;
         m[11] = 0;
 
         m[12] = 0;
         m[13] = 0;
         m[14] = 0;
         m[15] = 1;
+    }
+
+    void Matrix4::setScale(const Vector3f &scale)
+    {
+        setScale(scale.x, scale.y, scale.z);
     }
     
     void Matrix4::orthf(float left, float right, float bottom, float top, float zNear, float zFar)
@@ -189,7 +194,32 @@ namespace GPEngine3D{
     
     void Matrix4::lookAt(const Vector3f &eye, const Vector3f &to, const Vector3f &up)
     {
-        
+		vec3f dirV = eye - to;
+		vec3f rightV = dirV.crossMul(up);
+		vec3f upV = rightV.crossMul(dirV);
+		dirV.normalize();
+		rightV.normalize();
+		upV.normalize();
+		m[0] = rightV.x;
+		m[4] = rightV.y;
+		m[8] = rightV.z;
+
+		m[1] = upV.x;
+		m[5] = upV.y;
+		m[9] = upV.z;
+
+		m[2] = dirV.x;
+		m[6] = dirV.y;
+		m[10] = dirV.z;
+
+		m[12] = -(m[0] * eye.x + m[4] * eye.y + m[8] * eye.z);
+		m[13] = -(m[1] * eye.x + m[5] * eye.y + m[9] * eye.z);
+		m[14] = -(m[2] * eye.x + m[6] * eye.y + m[10] * eye.z);
+
+		m[3] = 0;
+		m[7] = 0;
+		m[11] = 0;
+		m[15] = 1;
     }
 
 	vec4f Matrix4::operator *(const vec4f &vec) const

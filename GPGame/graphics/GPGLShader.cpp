@@ -30,7 +30,7 @@ namespace GPEngine3D{
 		std::string tmpStr;
 		while (getline(file, tmpStr))
 		{
-			src.append("\n" + tmpStr);
+			src.append(tmpStr + "\n");
 		}
 		file.close();
         const char *source = src.c_str();
